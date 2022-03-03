@@ -10,6 +10,6 @@ class Tile(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=pos)
 
         if sprite_type == 'boundary':
-            self.hitbox = self.rect.inflate(-40, -10)
+            self.hitbox = self.rect.inflate(-40, -10) 
         else:
             self.hitbox = self.rect.inflate(0, -10)

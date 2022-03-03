@@ -12,11 +12,11 @@ class Game:
         pygame.display.set_caption('Non_Binary')
         pygame.display.set_icon(icon)
         pygame.init()
-        self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        self.screen = pygame.display.set_mode((WIDTH, HEIGHT)) #criacao da superficie de exibicao
         self.clock = pygame.time.Clock()
         self.level = Level()
 
-    def run(self):
+    def run(self): #loop de eventos e metodo de execucao
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -24,10 +24,10 @@ class Game:
                     sys.exit()
 
             self.level.run()
-            pygame.display.update()
-            self.clock.tick(FPS)
+            pygame.display.update() # atualiza a tela
+            self.clock.tick(FPS) #controle da taxa de quadros
 
 
-if __name__ == '__main__':
-    game = Game()
-    game.run()
+if __name__ == '__main__': #verificacao do nosso arquivo principal
+    game = Game() 
+    game.run() #run da class que definimos o que vai executar

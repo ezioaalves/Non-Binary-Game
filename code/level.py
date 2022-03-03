@@ -3,6 +3,7 @@ from settings import *
 from utils import *
 from tile import Tile
 from player import Player
+
 #from random import choice
 
 
@@ -52,7 +53,6 @@ class Level:
         # atualiza e desenha o jogo
         self.visible_sprites.custom_draw(self.player)
         self.visible_sprites.update()
-        debug(self.player.direction)
 
 
 class YSortCameraGroup(pygame.sprite.Group):

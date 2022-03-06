@@ -4,7 +4,7 @@ from utils import import_folder
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, groups, obstacle_sprites):
+    def __init__(self, pos, groups, obstacle_sprites, create_attack):
         super().__init__(groups)
         self.image = pygame.image.load(
             'graphics/player/baixo/baixo_0.png').convert_alpha()
@@ -23,6 +23,7 @@ class Player(pygame.sprite.Sprite):
         self.attacking = False
         self.attack_cooldown = 400
         self.attack_time = None
+        self.create_attack = create_attack
 
         self.obstacle_sprites = obstacle_sprites
 
@@ -36,32 +37,33 @@ class Player(pygame.sprite.Sprite):
             self.animations[animation] = import_folder(full_path)
 
     def input(self):
-        keys = pygame.key.get_pressed()
+        if not self.attacking:
+            keys = pygame.key.get_pressed()
 
-        # movement input
-        if keys[pygame.K_w]:
-            self.direction.y = -1
-            self.status = 'cima'
-        elif keys[pygame.K_s]:
-            self.direction.y = 1
-            self.status = 'baixo'
-        else:
-            self.direction.y = 0
+            # movement input
+            if keys[pygame.K_w]:
+                self.direction.y = -1
+                self.status = 'cima'
+            elif keys[pygame.K_s]:
+                self.direction.y = 1
+                self.status = 'baixo'
+            else:
+                self.direction.y = 0
 
-        if keys[pygame.K_d]:
-            self.direction.x = 1
-            self.status = 'direita'
-        elif keys[pygame.K_a]:
-            self.direction.x = -1
-            self.status = 'esquerda'
-        else:
-            self.direction.x = 0
+            if keys[pygame.K_d]:
+                self.direction.x = 1
+                self.status = 'direita'
+            elif keys[pygame.K_a]:
+                self.direction.x = -1
+                self.status = 'esquerda'
+            else:
+                self.direction.x = 0
 
-        # Tecla de disparo
-        if keys[pygame.K_SPACE] and not self.attacking:
-            self.attacking = True
-            self.attack_time = pygame.time.get_ticks()
-            pass
+            # Tecla de disparo
+            if keys[pygame.K_SPACE]:
+                self.attacking = True
+                self.attack_time = pygame.time.get_ticks()
+                self.create_attack()
 
     def get_status(self):
 
@@ -110,7 +112,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=self.hitbox.center)
 
     def cooldowns(self):
-        current_time = pygame.time.get_tick()
+        current_time = pygame.time.get_ticks()
 
         if self.attacking:
             if current_time - self.attack_time >= self.attack_cooldown:
@@ -120,4 +122,5 @@ class Player(pygame.sprite.Sprite):
         self.input()
         self.get_status()
         self.animate()
+        self.cooldowns()
         self.move(self.speed)

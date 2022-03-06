@@ -3,6 +3,7 @@ from settings import *
 from utils import *
 from tile import Tile
 from player import Player
+from weapon import Weapon
 
 
 class Level:
@@ -44,7 +45,10 @@ class Level:
                             Tile((x, y), [
                                  self.visible_sprites, self.obstacles_sprites], 'objects', surf)
         self.player = Player(
-            (2736, 1100), [self.visible_sprites], self.obstacles_sprites)  # define o jogador e sua position inicial
+            (2736, 1100), [self.visible_sprites], self.obstacles_sprites, self.create_attack)  # define o jogador e sua position inicial
+
+    def create_attack(self):
+        Weapon(self.player, [self.visible_sprites])
 
     def run(self):
         # atualiza e desenha o jogo

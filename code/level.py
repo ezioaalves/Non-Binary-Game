@@ -1,9 +1,12 @@
+from html import entities
 import pygame
 from settings import *
 from utils import *
 from tile import Tile
 from player import Player
 from weapon import Weapon
+from ui import UI
+from enemy import Enemy
 
 
 class Level:
@@ -14,8 +17,15 @@ class Level:
         # configuração do grupo de sprites
         self.visible_sprites = YSortCameraGroup()
         self.obstacles_sprites = pygame.sprite.Group()
-        # configuração de sprite'
+
+        # sprites do ataque
+        self.current_attack = None
+
+        # configuração de sprite
         self.create_map()
+
+        # Interface de Usuario
+        self.ui = UI()
 
     def create_map(self):  # criando o dicionario
         layouts = {
@@ -23,6 +33,7 @@ class Level:
             'boundary': import_csv_layout('graphics/Tileset/Mapa 1._Divisas.csv'),
             # define as posicoes dos objetos no mapa
             'objects': import_csv_layout('graphics/Tileset/Mapa 1._Objetos.csv'),
+            'entities': import_csv_layout('graphics\Tileset\Mapa 1._Inimigos.csv')
         }
         graphics = {
             'objects': import_folder('graphics\Tileset\Objetos')
@@ -37,23 +48,38 @@ class Level:
                         x = col_index * TILESIZE
                         # (reserva o tilesize da linha)
                         y = row_index * TILESIZE
-                        if style == 'boundary':
-                            Tile((x, y), [self.obstacles_sprites],
-                                 'boundary')  # define a colisao
+                        # if style == 'boundary':
+                        # Tile((x, y), [self.obstacles_sprites],
+                        # 'boundary')  # define a colisao
                         if style == 'objects':
                             surf = graphics['objects'][int(col)]
                             Tile((x, y), [
                                  self.visible_sprites, self.obstacles_sprites], 'objects', surf)
-        self.player = Player(
-            (2736, 1100), [self.visible_sprites], self.obstacles_sprites, self.create_attack)  # define o jogador e sua position inicial
+                        if style == 'entities':
+                            if col == '266':
+                                # define o jogador e sua position inicial
+                                self.player = Player((x, y), [
+                                                     self.visible_sprites], self.obstacles_sprites, self.create_attack, self.destroy_attack)
+                            else:
+                                if col == '230':
+                                    monster_name = 'bug'
+                                Enemy(monster_name, (x, y), [
+                                      self.visible_sprites], self.obstacles_sprites)
 
     def create_attack(self):
-        Weapon(self.player, [self.visible_sprites])
+        self.current_attack = Weapon(self.player, [self.visible_sprites])
+
+    def destroy_attack(self):
+        if self.current_attack:
+            self.current_attack.kill()
+        self.current_attack = None
 
     def run(self):
         # atualiza e desenha o jogo
         self.visible_sprites.custom_draw(self.player)
         self.visible_sprites.update()
+        self.visible_sprites.enemy_update(self.player)
+        self.ui.display(self.player)
 
 
 class YSortCameraGroup(pygame.sprite.Group):
@@ -85,3 +111,9 @@ class YSortCameraGroup(pygame.sprite.Group):
         for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
             offset_pos = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image, offset_pos)
+
+    def enemy_update(self, player):
+        enemy_sprites = [sprite for sprite in self.sprites() if hasattr(
+            sprite, 'sprite_type') and sprite.sprite_type == 'enemy']
+        for enemy in enemy_sprites:
+            enemy.enemy_update(player)

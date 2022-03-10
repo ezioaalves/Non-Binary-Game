@@ -7,14 +7,19 @@ class Weapon(pygame.sprite.Sprite):
         direction = player.status.split('_')[0]
 
         # graficos
-        self.image = pygame.Surface((40, 40))
+        full_path = f'graphics/weapons/twelve_{direction}.png'
+        self.image = pygame.image.load(full_path).convert_alpha()
 
         # posição
         if direction == 'direita':
-            self.rect = self.image.get_rect(midleft=player.rect.midright)
+            self.rect = self.image.get_rect(
+                midleft=player.rect.midright+pygame.math.Vector2(-18, 10))
         elif direction == 'esquerda':
-            self.rect = self.image.get_rect(midright=player.rect.midleft)
+            self.rect = self.image.get_rect(
+                midright=player.rect.midleft+pygame.math.Vector2(18, 10))
         elif direction == 'baixo':
-            self.rect = self.image.get_rect(midtop=player.rect.midbottom)
+            self.rect = self.image.get_rect(
+                midtop=player.rect.midbottom+pygame.math.Vector2(0, 0))
         elif direction == 'cima':
-            self.rect = self.image.get_rect(midbottom=player.rect.midtop)
+            self.rect = self.image.get_rect(
+                midbottom=player.rect.midtop+pygame.math.Vector2(0, 0))

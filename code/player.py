@@ -128,9 +128,20 @@ class Player(Entity):
         else:
             self.image.set_alpha(255)
 
+    def recover(self):
+        if self.energy <= self.stats['energia']:
+            self.energy += 0.05
+        else:
+            self.energy = self.stats['energia']
+        if self.health <= self.stats['vida']:
+            self.health += 0.01
+        else:
+            self.health = self.stats['vida']
+
     def update(self):
         self.input()
         self.get_status()
         self.animate()
         self.cooldowns()
         self.move(self.speed)
+        self.recover()

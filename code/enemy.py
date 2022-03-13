@@ -6,7 +6,7 @@ from utils import *
 
 
 class Enemy(Entity):
-    def __init__(self, monster_name, pos, groups, obstacle_sprites, damage_player):
+    def __init__(self, monster_name, pos, groups, obstacle_sprites, damage_player, trigger_death_particles):
 
         # configuração geral
         super().__init__(groups)
@@ -37,8 +37,16 @@ class Enemy(Entity):
         # interação com jogador
         self.can_attack = True
         self.attack_time = None
-        self.attack_cooldown = 400
+        self.attack_cooldown = 800
         self.damage_player = damage_player
+        self.trigger_death_particles = trigger_death_particles
+
+        # sons
+        self.death_sound = pygame.mixer.Sound(
+            'audio\death\inimigo_deletado.wav')
+        self.death_sound.set_volume(0.2)
+        self.attack_sound = pygame.mixer.Sound(monster_info['som_ataque'])
+        self.attack_sound.set_volume(0.2)
 
     def import_graphics(self, name):
         self.animations = {'ataque': [], 'andando': [], 'parado': []}
@@ -75,6 +83,7 @@ class Enemy(Entity):
         if self.status == 'ataque':
             self.attack_time = pygame.time.get_ticks()
             self.damage_player(self.attack_damage, self.attack_type)
+            self.attack_sound.play()
         elif self.status == 'andando':
             self.direction = self.get_player_distance_direction(player)[1]
         else:
@@ -115,6 +124,9 @@ class Enemy(Entity):
             self.health -= player.attack
             if self.health <= 0:
                 self.kill()
+                self.trigger_death_particles(
+                    self.rect.center, self.monster_name)
+                self.death_sound.play()
             self.hit_time = pygame.time.get_ticks()
             self.vulnerable = False
             self.direction = self.get_player_distance_direction(player)[1]

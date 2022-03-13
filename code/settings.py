@@ -26,6 +26,6 @@ UI_BORDER_COLOR_ACTIVE = 'gold'
 
 # inimigos
 monster_data = {
-    'bug': {'vida': 100, 'dano': 20, 'tipo_ataque': 'erro', 'som_ataque': 'audio/attack\erro.wav', 'velocidade': 3, 'resistencia': 3, 'raio_ataque': 80, 'raio_percepcao': 360},
+    'bug': {'vida': 60, 'dano': 20, 'tipo_ataque': 'erro', 'som_ataque': 'audio/attack\erro.wav', 'velocidade': 3, 'resistencia': 3, 'raio_ataque': 80, 'raio_percepcao': 360},
     'cliente': {'vida': 300, 'dano': 40, 'tipo_ataque': 'alteracao', 'som_ataque': 'audio/attack\erro.wav', 'velocidade': 2, 'resistencia': 0, 'raio_ataque': 400, 'raio_percepcao': 0}
 }

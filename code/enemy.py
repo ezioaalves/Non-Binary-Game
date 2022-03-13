@@ -6,23 +6,22 @@ from utils import *
 
 
 class Enemy(Entity):
-    def __init__(self, monster_name, pos, groups, obstacle_sprites):
+    def __init__(self, monster_name, pos, groups, obstacle_sprites, damage_player):
 
         # configuração geral
         super().__init__(groups)
         self.sprite_type = 'enemy'
 
         # configuração grafica
-        self.import_graphics('monster_name')
-        self.status = 'baixo'
+        self.import_graphics(monster_name)
+        self.status = 'parado'
         self.image = pygame.image.load(
-            'graphics/enemies/bug/baixo/baixo_0.png').convert_alpha()
+            'graphics/enemies/bug/parado/0.png').convert_alpha()
 
         # movimento
         self.rect = self.image.get_rect(topleft=pos)
         self.hitbox = self.rect.inflate(0, -10)
         self.obstacle_sprites = obstacle_sprites
-        self.attacking = False
 
         # atributos
         self.monster_name = monster_name
@@ -35,12 +34,18 @@ class Enemy(Entity):
         self.notice_radius = monster_info['raio_percepcao']
         self.attack_type = monster_info['tipo_ataque']
 
+        # interação com jogador
+        self.can_attack = True
+        self.attack_time = None
+        self.attack_cooldown = 400
+        self.damage_player = damage_player
+
     def import_graphics(self, name):
-        self.animations = {'cima': [], 'baixo': [], 'esquerda': [], 'direita': [],
-                           'direita_parado': [], 'esquerda_parado': [], 'cima_parado': [], 'baixo_parado': []}
+        self.animations = {'ataque': [], 'andando': [], 'parado': []}
         main_path = f'graphics\enemies/{name}/'
         for animation in self.animations.keys():
-            self.animations[animation] = import_folder(main_path + animation)
+            full_path = main_path + animation
+            self.animations[animation] = import_folder(full_path)
 
     def get_player_distance_direction(self, player):
         enemy_vec = pygame.math.Vector2(self.rect.center)
@@ -57,7 +62,9 @@ class Enemy(Entity):
     def get_status(self, player):
         distance = self.get_player_distance_direction(player)[0]
 
-        if distance <= self.attack_radius:
+        if distance <= self.attack_radius and self.can_attack:
+            if self.status != 'ataque':
+                self.frame_index = 0
             self.status = 'ataque'
         elif distance <= self.notice_radius:
             self.status = 'andando'
@@ -65,28 +72,58 @@ class Enemy(Entity):
             self.status = 'parado'
 
     def actions(self, player):
-        if self.attacking == True:
-            pass
+        if self.status == 'ataque':
+            self.attack_time = pygame.time.get_ticks()
+            self.damage_player(self.attack_damage, self.attack_type)
         elif self.status == 'andando':
             self.direction = self.get_player_distance_direction(player)[1]
         else:
             self.direction = pygame.math.Vector2()
 
-#    def animate(self):
-#        animation = self.animations[self.status]
-#
-#        # loop over the frame index
-#        self.frame_index += self.animation_speed
-#        if self.frame_index >= len(animation):
-#            self.frame_index = 0
-#
-#        # set the image
-#        self.image = animation[int(self.frame_index)]
-#        self.rect = self.image.get_rect(center=self.hitbox.center)
+    def animate(self):
+        animation = self.animations[self.status]
+
+        # loop over the frame index
+        self.frame_index += self.animation_speed
+        if self.frame_index >= len(animation):
+            if self.status == 'ataque':
+                self.can_attack = False
+            self.frame_index = 0
+
+        # set the image
+        self.image = animation[int(self.frame_index)]
+        self.rect = self.image.get_rect(center=self.hitbox.center)
+
+        if not self.vulnerable:
+            alpha = self.wave_value()
+            self.image.set_alpha(alpha)
+        else:
+            self.image.set_alpha(255)
+
+    def cooldowns(self):
+        if not self.can_attack:
+            current_time = pygame.time.get_ticks()
+            if current_time - self.attack_time >= self.attack_cooldown:
+                self.can_attack = True
+        if not self.vulnerable:
+            current_time = pygame.time.get_ticks()
+            if current_time - self.hit_time >= self.invicible_duration:
+                self.vulnerable = True
+
+    def get_damage(self, player):
+        if self.vulnerable:
+            self.health -= player.attack
+            if self.health <= 0:
+                self.kill()
+            self.hit_time = pygame.time.get_ticks()
+            self.vulnerable = False
+            self.direction = self.get_player_distance_direction(player)[1]
+            self.direction *= -self.resistance
 
     def update(self):
         self.move(self.speed)
-        # self.animate()
+        self.animate()
+        self.cooldowns()
 
     def enemy_update(self, player):
         self.get_status(player)

@@ -1,5 +1,6 @@
 from html import entities
 import pygame
+from animation_player import AnimationPlayer
 from settings import *
 from utils import *
 from tile import Tile
@@ -20,12 +21,17 @@ class Level:
 
         # sprites do ataque
         self.current_attack = None
+        self.attack_sprites = pygame.sprite.Group()
+        self.attackable_sprites = pygame.sprite.Group()
 
         # configuração de sprite
         self.create_map()
 
         # Interface de Usuario
         self.ui = UI()
+
+        # particulas
+        self.animation_player = AnimationPlayer()
 
     def create_map(self):  # criando o dicionario
         layouts = {
@@ -63,22 +69,44 @@ class Level:
                             else:
                                 if col == '230':
                                     monster_name = 'bug'
+                                if col == '374':
+                                    monster_name = 'cliente'
                                 Enemy(monster_name, (x, y), [
-                                      self.visible_sprites], self.obstacles_sprites)
+                                      self.visible_sprites, self.attackable_sprites], self.obstacles_sprites, self.damage_player)
 
     def create_attack(self):
-        self.current_attack = Weapon(self.player, [self.visible_sprites])
+        self.current_attack = Weapon(
+            self.player, [self.visible_sprites, self.attack_sprites])
 
     def destroy_attack(self):
         if self.current_attack:
             self.current_attack.kill()
         self.current_attack = None
 
+    def player_attack_logic(self):
+        if self.attack_sprites:
+            for attack_sprites in self.attack_sprites:
+                collision_sprites = pygame.sprite.spritecollide(
+                    attack_sprites, self.attackable_sprites, False)
+                if collision_sprites:
+                    for target_sprite in collision_sprites:
+                        pos = target_sprite.rect.center
+                        self.animation_player.create_gun_particles(
+                            pos, [self.visible_sprites])
+                        target_sprite.get_damage(self.player)
+
+    def damage_player(self, amount, attack_type):
+        if self.player.vulnerable:
+            self.player.health -= amount
+            self.player.vulnerable = False
+            self.player.hurt_time = pygame.time.get_ticks()
+
     def run(self):
         # atualiza e desenha o jogo
         self.visible_sprites.custom_draw(self.player)
         self.visible_sprites.update()
         self.visible_sprites.enemy_update(self.player)
+        self.player_attack_logic()
         self.ui.display(self.player)
 
 

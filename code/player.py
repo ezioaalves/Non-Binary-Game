@@ -18,19 +18,25 @@ class Player(Entity):
 
         # attacking
         self.attacking = False
-        self.attack_cooldown = 400
+        self.attack_cooldown = 300
         self.attack_time = None
         self.create_attack = create_attack
         self.destroy_attack = destroy_attack
 
         # atributos
         self.stats = {'vida': 100, 'energia': 60,
-                      'ataque': 10, 'velocidade': 6}
+                      'ataque': 30, 'velocidade': 6}
         self.health = self.stats['vida']
         self.energy = self.stats['energia']
+        self.attack = self.stats['ataque']
         self.speed = self.stats['velocidade']
 
         self.obstacle_sprites = obstacle_sprites
+
+        # temporizador dano
+        self.vulnerable = True
+        self.hurt_time = None
+        self.invicible_duration = 500
 
     def import_player_assets(self):
         character_path = 'graphics/player/'
@@ -70,12 +76,38 @@ class Player(Entity):
                 self.attack_time = pygame.time.get_ticks()
                 self.create_attack()
 
+    def move(self, speed):
+        if self.attacking == True:
+            self.direction.x = 0
+            self.direction.y = 0
+
+        if self.direction.magnitude() != 0:
+            self.direction = self.direction.normalize()
+
+        self.hitbox.x += self.direction.x * speed
+        self.collision('horizontal')
+        self.hitbox.y += self.direction.y * speed
+        self.collision('vertical')
+        self.rect.center = self.hitbox.center
+
     def get_status(self):
 
         # parado status
         if self.direction.x == 0 and self.direction.y == 0:
             if not 'parado' in self.status:
                 self.status = self.status + '_parado'
+
+    def cooldowns(self):
+        current_time = pygame.time.get_ticks()
+
+        if self.attacking:
+            if current_time - self.attack_time >= self.attack_cooldown:
+                self.attacking = False
+                self.destroy_attack()
+
+        if not self.vulnerable:
+            if current_time - self.hurt_time >= self.invicible_duration:
+                self.vulnerable = True
 
     def animate(self):
         animation = self.animations[self.status]
@@ -89,13 +121,12 @@ class Player(Entity):
         self.image = animation[int(self.frame_index)]
         self.rect = self.image.get_rect(center=self.hitbox.center)
 
-    def cooldowns(self):
-        current_time = pygame.time.get_ticks()
-
-        if self.attacking:
-            if current_time - self.attack_time >= self.attack_cooldown:
-                self.attacking = False
-                self.destroy_attack()
+        # piscar
+        if not self.vulnerable:
+            alpha = self.wave_value()
+            self.image.set_alpha(alpha)
+        else:
+            self.image.set_alpha(255)
 
     def update(self):
         self.input()

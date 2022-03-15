@@ -156,16 +156,13 @@ class Player(Entity):
                 self.teleporting = True
 
                 if 3400 < sprite.rect.topleft[0] < 3500:
-                    print(sprite.rect.topleft)
                     self.hitbox.topleft = (1776, 624)
                 elif 1700 < sprite.rect.topleft[0] < 1800:
-                    print(sprite.rect.topleft)
                     self.hitbox.topleft = (3456, 624)
                 elif 2200 < sprite.rect.topleft[0] < 2300:
-                    print(sprite.rect.topleft)
                     self.hitbox.topleft = (3936, 3888)
                 else:
-                    print(sprite.rect.topleft)
+                    self.teleporting = False
                 self.status = 'baixo_parado'
 
     def update(self):

@@ -5,7 +5,7 @@ from entity import Entity
 
 
 class Player(Entity):
-    def __init__(self, pos, groups, obstacle_sprites, create_attack, destroy_attack):
+    def __init__(self, pos, groups, obstacle_sprites, portal_sprites, create_attack, destroy_attack):
         super().__init__(groups)
         self.image = pygame.image.load(
             'graphics/player/baixo/baixo_0.png').convert_alpha()
@@ -23,6 +23,11 @@ class Player(Entity):
         self.create_attack = create_attack
         self.destroy_attack = destroy_attack
 
+        # teleporting
+        self.teleporting = False
+        self.teleport_cooldown = 300
+        self.teleport_time = None
+
         # atributos
         self.stats = {'vida': 100, 'energia': 60,
                       'ataque': 30, 'velocidade': 6}
@@ -32,6 +37,7 @@ class Player(Entity):
         self.speed = self.stats['velocidade']
 
         self.obstacle_sprites = obstacle_sprites
+        self.portal_sprites = portal_sprites
 
         # temporizador dano
         self.vulnerable = True
@@ -48,7 +54,7 @@ class Player(Entity):
             self.animations[animation] = import_folder(full_path)
 
     def input(self):
-        if not self.attacking:
+        if not self.attacking and not self.teleporting:
             keys = pygame.key.get_pressed()
 
             # movement input
@@ -77,7 +83,7 @@ class Player(Entity):
                 self.create_attack()
 
     def move(self, speed):
-        if self.attacking == True:
+        if self.attacking or self.teleporting:
             self.direction.x = 0
             self.direction.y = 0
 
@@ -89,6 +95,7 @@ class Player(Entity):
         self.hitbox.y += self.direction.y * speed
         self.collision('vertical')
         self.rect.center = self.hitbox.center
+        self.telepot()
 
     def get_status(self):
 
@@ -108,6 +115,10 @@ class Player(Entity):
         if not self.vulnerable:
             if current_time - self.hurt_time >= self.invicible_duration:
                 self.vulnerable = True
+
+        if self.teleporting:
+            if current_time - self.teleport_time >= self.teleport_cooldown:
+                self.teleporting = False
 
     def animate(self):
         animation = self.animations[self.status]
@@ -137,6 +148,26 @@ class Player(Entity):
             self.health += 0.01
         else:
             self.health = self.stats['vida']
+
+    def telepot(self):
+        for sprite in self.portal_sprites:
+            if sprite.hitbox.colliderect(self.hitbox):
+                self.teleport_time = pygame.time.get_ticks()
+
+                self.teleporting = True
+
+                if 3400 < sprite.rect.topleft[0] < 3500:
+                    print(sprite.rect.topleft)
+                    self.hitbox.topleft = (1776, 624)
+                elif 1700 < sprite.rect.topleft[0] < 1800:
+                    print(sprite.rect.topleft)
+                    self.hitbox.topleft = (3456, 624)
+                elif 2200 < sprite.rect.topleft[0] < 2300:
+                    print(sprite.rect.topleft)
+                    self.hitbox.topleft = (3936, 3888)
+                else:
+                    print(sprite.rect.topleft)
+                self.status = 'baixo_parado'
 
     def update(self):
         self.input()

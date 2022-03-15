@@ -17,6 +17,7 @@ class Level:
         # configuração do grupo de sprites
         self.visible_sprites = YSortCameraGroup()
         self.obstacles_sprites = pygame.sprite.Group()
+        self.portals_sprites = pygame.sprite.Group()
 
         # sprites do ataque
         self.current_attack = None
@@ -36,7 +37,7 @@ class Level:
         # sons
         self.hit_sound = pygame.mixer.Sound('audio/attack/acerto.wav')
         self.hit_sound.set_volume(0.2)
-        self.shot_sound = pygame.mixer.Sound('audio/attack\disparo.wav')
+        self.shot_sound = pygame.mixer.Sound('audio/attack/disparo.wav')
         self.shot_sound.set_volume(0.2)
 
     def create_map(self):  # criando o dicionario
@@ -45,10 +46,11 @@ class Level:
             'boundary': import_csv_layout('graphics/Tileset/Mapa 1._Divisas.csv'),
             # define as posicoes dos objetos no mapa
             'objects': import_csv_layout('graphics/Tileset/Mapa 1._Objetos.csv'),
-            'entities': import_csv_layout('graphics\Tileset\Mapa 1._Inimigos.csv')
+            'entities': import_csv_layout('graphics/Tileset/Mapa 1._Inimigos.csv'),
+            'portals': import_csv_layout('graphics/Tileset/Mapa 1._Teletransporte.csv')
         }
         graphics = {
-            'objects': import_folder('graphics\Tileset\Objetos')
+            'objects': import_folder('graphics/Tileset/Objetos')
         }
 
         for style, layout in layouts.items():  # verificacao cada intem dentro do layouts
@@ -67,11 +69,17 @@ class Level:
                             surf = graphics['objects'][int(col)]
                             Tile((x, y), [
                                  self.visible_sprites, self.obstacles_sprites], 'objects', surf)
+                        if style == 'boundary':
+                            Tile((x, y), [self.obstacles_sprites],
+                                 'boundary')
+                        if style == 'portals':
+                            Tile((x, y), [self.portals_sprites],
+                                 'portal')
                         if style == 'entities':
                             if col == '266':
                                 # define o jogador e sua position inicial
                                 self.player = Player((x, y), [
-                                                     self.visible_sprites], self.obstacles_sprites, self.create_attack, self.destroy_attack)
+                                                     self.visible_sprites], self.obstacles_sprites, self.portals_sprites,  self.create_attack, self.destroy_attack)
                             else:
                                 if col == '230':
                                     monster_name = 'bug'

@@ -59,6 +59,7 @@ class Player(Entity):
         self.animation_player = AnimationPlayer()
 
     'carrega todos os sprites de todos os estados do jogador'
+
     def import_player_assets(self):
         character_path = 'graphics/player/'
         self.animations = {'cima': [], 'baixo': [], 'esquerda': [], 'direita': [],
@@ -110,9 +111,10 @@ class Player(Entity):
         self.hitbox.y += self.direction.y * speed
         self.collision('vertical')
         self.rect.center = self.hitbox.center
-        self.telepot()
+        self.teleport()
 
     'verifica se o jogador'
+
     def get_status(self):
 
         # parado status
@@ -137,6 +139,7 @@ class Player(Entity):
                 self.teleporting = False
 
     'animação do sprite do jogador'
+
     def animate(self):
         animation = self.animations[self.status]
 
@@ -157,6 +160,7 @@ class Player(Entity):
             self.image.set_alpha(255)
 
     'recarrega a saúde e energia do jogador'
+
     def recover(self):
         if self.energy <= self.stats['energia']:
             self.energy += 0.05
@@ -167,7 +171,7 @@ class Player(Entity):
         else:
             self.health = self.stats['vida']
 
-    def telepot(self):
+    def teleport(self):
         for sprite in self.portal_sprites:
             centralize = pygame.math.Vector2(24, 24)
             if sprite.hitbox.colliderect(self.hitbox):
@@ -204,14 +208,17 @@ class Player(Entity):
                 direction = pygame.math.Vector2(0, 1)
 
             for i in range(1, 10):
-                #horizontal
+                # horizontal
                 if direction.x:
-                    offset_x = (direction.x * i) * settings['general_settings']['tilesize']
+                    offset_x = (direction.x * i) * \
+                        settings['general_settings']['tilesize']
                     shot_x = self.rect.centerx + offset_x
                     shot_y = self.rect.centery
-                    self.animation_player.create_particles('apontar', (shot_x, shot_y), [self.visible_sprites, self.point_sprites])
+                    self.animation_player.create_particles('apontar', (shot_x, shot_y), [
+                                                           self.visible_sprites, self.point_sprites])
                 else:
-                    offset_y = (direction.y * i) * settings['general_settings']['tilesize']
+                    offset_y = (direction.y * i) * \
+                        settings['general_settings']['tilesize']
                     shot_x = self.rect.centerx
                     shot_y = self.rect.centery + offset_y
                     self.animation_player.create_particles(
@@ -224,7 +231,8 @@ class Player(Entity):
                     if hit:
                         for target_sprite in hit:
                             position = target_sprite.rect.center
-                            self.animation_player.create_particles('arma', position, [self.visible_sprites])
+                            self.animation_player.create_particles(
+                                'arma', position, [self.visible_sprites])
                     if hit_damage:
                         for target_sprite in hit_damage:
                             target_sprite.get_damage(self)
@@ -234,8 +242,9 @@ class Player(Entity):
                 if hit or hit_damage:
                     self.hit_sound.play()
                     break
-    
+
     'destrói o sprite de disparo'
+
     def destroy_attack(self):
         if self.current_attack:
             self.current_attack.kill()

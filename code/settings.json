@@ -19,10 +19,10 @@
         "health_color": "green"
     },
 
-    "title_screen":{
-        "font": "graphics/Font/Mega-Man-Battle-Network.ttf",
-        "font_size": 18,
-        "text_color": "#EEEEEE"
+    "screen_img":{
+        "title": "graphics/screen/tela_titulo.png",
+        "gameover": "graphics/screen/gameover.png",
+        "final": "graphics/screen/recompensa.png"
     },
 
     "monster_data":{

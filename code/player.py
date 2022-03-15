@@ -44,6 +44,9 @@ class Player(Entity):
         self.teleporting = False
         self.teleport_cooldown = 300
         self.teleport_time = None
+        self.teleport_sound = pygame.mixer.Sound(
+            'audio/teleporte/teleport.wav')
+        self.teleport_sound.set_volume(3)
 
         # atributos
         self.stats = {'vida': 100, 'energia': 60,
@@ -173,7 +176,7 @@ class Player(Entity):
     def recover(self):
         '''recarrega a saúde e energia do jogador'''
         if self.energy <= self.stats['energia']:
-            self.energy += 0.05
+            self.energy += 0.1
         else:
             self.energy = self.stats['energia']
         if self.health <= self.stats['vida']:

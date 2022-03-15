@@ -6,7 +6,7 @@ from read_json import settings
 
 
 class Enemy(Entity):
-    def __init__(self, monster_name, pos, groups, obstacle_sprites, damage_player, trigger_death_particles):
+    def __init__(self, monster_name, pos, groups, obstacle_sprites, damage_player, trigger_death_particles, function):
 
         # configuração geral
         super().__init__(groups)
@@ -40,6 +40,9 @@ class Enemy(Entity):
         self.attack_cooldown = 800
         self.damage_player = damage_player
         self.trigger_death_particles = trigger_death_particles
+        self.function = function
+        self.final_kill = None
+        self.final_trigger = False
 
         # sons
         self.death_sound = pygame.mixer.Sound(
@@ -124,6 +127,10 @@ class Enemy(Entity):
             current_time = pygame.time.get_ticks()
             if current_time - self.hit_time >= self.invicible_duration:
                 self.vulnerable = True
+        if self.final_trigger:
+            current_time = pygame.time.get_ticks()
+            if current_time - self.final_kill >= 400:
+                self.function()
 
     def get_damage(self, player):
         '''gerencia o dano causado pelo jogador no inimigo'''
@@ -134,6 +141,9 @@ class Enemy(Entity):
                 self.trigger_death_particles(
                     self.rect.center, self.monster_name)
                 self.death_sound.play()
+                if self.monster_name == 'cliente':
+                    self.final_kill = pygame.time.get_ticks()
+                    self.final_trigger = True
             self.hit_time = pygame.time.get_ticks()
             self.vulnerable = False
             self.direction = self.get_player_distance_direction(player)[1]

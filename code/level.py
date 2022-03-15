@@ -10,7 +10,7 @@ from read_json import settings
 
 
 class Level:
-    def __init__(self):
+    def __init__(self, call_gameover, call_final):
 
         # busca a surface à ser mostrada
         self.display_surface = pygame.display.get_surface()
@@ -35,9 +35,15 @@ class Level:
 
         # sons
         self.hit_sound = pygame.mixer.Sound('audio/attack/acerto.wav')
-        self.hit_sound.set_volume(0.2)
+        self.hit_sound.set_volume(3)
         self.shot_sound = pygame.mixer.Sound('audio/attack/disparo.wav')
-        self.shot_sound.set_volume(0.2)
+        self.shot_sound.set_volume(3)
+        self.background = pygame.mixer.Sound('audio/background\level.wav')
+        self.background.set_volume(0.01)
+
+        # screens
+        self.call_gameover = call_gameover
+        self.call_final = call_final
 
     def create_map(self):  # criando o dicionario
         '''desenha o gráfico'''
@@ -59,12 +65,11 @@ class Level:
                 for col_index, col in enumerate(row):
                     if col != '-1':
                         # verificar a coluna que estamos andando (reserva o tilesize da coluna)
-                        x = col_index * settings['general_settings']['tilesize']
+                        x = col_index * \
+                            settings['general_settings']['tilesize']
                         # (reserva o tilesize da linha)
-                        y = row_index * settings['general_settings']['tilesize']
-                        # if style == 'boundary':
-                        # Tile((x, y), [self.obstacles_sprites],
-                        # 'boundary')  # define a colisao
+                        y = row_index * \
+                            settings['general_settings']['tilesize']
                         if style == 'objects':
                             surf = graphics['objects'][int(col)]
                             Tile((x, y), [
@@ -86,7 +91,11 @@ class Level:
                                 if col == '374':
                                     monster_name = 'cliente'
                                 Enemy(monster_name, (x, y), [
-                                      self.visible_sprites, self.attackable_sprites], self.obstacles_sprites, self.damage_player, self.trigger_death_particles)
+                                      self.visible_sprites, self.attackable_sprites], self.obstacles_sprites, self.damage_player, self.trigger_death_particles, self.function)
+
+    def function(self):
+        self.background.stop()
+        self.call_final()
 
     #dentro de player
     def damage_player(self, amount, attack_type):
@@ -110,6 +119,7 @@ class Level:
         self.visible_sprites.update()
         self.visible_sprites.enemy_update(self.player)
         self.ui.display(self.player)
+        self.background.play(loops=-1)
 
 
 class YSortCameraGroup(pygame.sprite.Group):

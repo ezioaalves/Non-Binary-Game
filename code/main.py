@@ -1,7 +1,7 @@
 import pygame
 import sys
-from settings import *
 from level import Level
+from read_json import settings
 
 
 class Game:
@@ -13,7 +13,7 @@ class Game:
         pygame.display.set_icon(icon)
         pygame.init()
         # criacao da superficie de exibicao
-        self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        self.screen = pygame.display.set_mode((settings["general_settings"]["width"], settings["general_settings"]["height"]))
         self.clock = pygame.time.Clock()
         self.level = Level()
 
@@ -26,7 +26,7 @@ class Game:
 
             self.level.run()
             pygame.display.update()  # atualiza a tela
-            self.clock.tick(FPS)  # controle da taxa de quadros
+            self.clock.tick(settings["general_settings"]["fps"])  # controle da taxa de quadros
 
 
 if __name__ == '__main__':  # verificacao do nosso arquivo principal

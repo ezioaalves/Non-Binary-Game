@@ -20,7 +20,6 @@ class Level:
         self.portals_sprites = pygame.sprite.Group()
 
         # sprites do ataque
-        self.current_attack = None
         self.attack_sprites = pygame.sprite.Group()
         self.attackable_sprites = pygame.sprite.Group()
         self.point_sprites = pygame.sprite.Group()
@@ -40,6 +39,7 @@ class Level:
         self.shot_sound = pygame.mixer.Sound('audio/attack/disparo.wav')
         self.shot_sound.set_volume(0.2)
 
+    'desenha o gráfico'
     def create_map(self):  # criando o dicionario
         layouts = {
             # limite que define onde o jogador pode ou nao ir
@@ -79,7 +79,7 @@ class Level:
                             if col == '266':
                                 # define o jogador e sua position inicial
                                 self.player = Player((x, y), [
-                                                     self.visible_sprites], self.obstacles_sprites, self.portals_sprites,  self.create_attack, self.destroy_attack)
+                                                     self.visible_sprites], self.obstacles_sprites, self.portals_sprites, self.point_sprites, self.attackable_sprites)
                             else:
                                 if col == '230':
                                     monster_name = 'bug'
@@ -87,60 +87,6 @@ class Level:
                                     monster_name = 'cliente'
                                 Enemy(monster_name, (x, y), [
                                       self.visible_sprites, self.attackable_sprites], self.obstacles_sprites, self.damage_player, self.trigger_death_particles)
-
-    def create_attack(self):
-        if self.player.energy >= 10:
-            self.shot_sound.play()
-            self.current_attack = Weapon(
-                self.player, [self.visible_sprites])
-            self.player.energy -= 10
-            facing = self.player.status.split('_')[0]
-            if facing == 'direita':
-                direction = pygame.math.Vector2(1, 0)
-            elif facing == 'esquerda':
-                direction = pygame.math.Vector2(-1, 0)
-            elif facing == 'cima':
-                direction = pygame.math.Vector2(0, -1)
-            else:
-                direction = pygame.math.Vector2(0, 1)
-            for i in range(1, 10):
-                # horizontal
-                if direction.x:
-                    offset_x = (direction.x*i) * settings['general_settings']['tilesize']
-                    shot_x = self.player.rect.centerx + offset_x
-                    shot_y = self.player.rect.centery
-                    self.animation_player.create_particles(
-                        'apontar', (shot_x, shot_y), [self.visible_sprites, self.point_sprites])
-                else:
-                    offset_y = (direction.y*i) * settings['general_settings']['tilesize']
-                    shot_x = self.player.rect.centerx
-                    shot_y = self.player.rect.centery + offset_y
-                    self.animation_player.create_particles(
-                        'apontar', (shot_x, shot_y), [self.visible_sprites, self.point_sprites])
-                for point_sprite in self.point_sprites:
-                    hit = pygame.sprite.spritecollide(
-                        point_sprite, self.obstacles_sprites, False)
-                    hit_damage = pygame.sprite.spritecollide(
-                        point_sprite, self.attackable_sprites, False)
-                    if hit:
-                        for target_sprite in hit:
-                            position = target_sprite.rect.center
-                            self.animation_player.create_particles('arma',
-                                                                   position, [self.visible_sprites])
-                    if hit_damage:
-                        for target_sprite in hit_damage:
-                            target_sprite.get_damage(self.player)
-                            position = target_sprite.rect.center
-                            self.animation_player.create_particles(
-                                'arma', position, [self.visible_sprites])
-                if hit or hit_damage:
-                    self.hit_sound.play()
-                    break
-
-    def destroy_attack(self):
-        if self.current_attack:
-            self.current_attack.kill()
-        self.current_attack = None
 
     def damage_player(self, amount, attack_type):
         if self.player.vulnerable:

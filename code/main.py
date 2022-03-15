@@ -17,10 +17,12 @@ class Game:
         self.screen = pygame.display.set_mode(
             (settings["general_settings"]["width"], settings["general_settings"]["height"]))
         self.clock = pygame.time.Clock()
-        self.level = Level()
-        self.title_screen = Screen("title")
-        self.gameover_screen = Screen("gameover")
-        self.final_screen = Screen("final")
+        self.level = Level(self.call_gameover, self.call_final)
+        self.title_screen = Screen("title", self.call_level)
+        self.gameover_screen = Screen("gameover", self.call_title)
+        self.final_screen = Screen("final", self.call_title)
+        self.black_screen = Screen("black", self.call_black)
+        self.playing = self.title_screen
 
     def run(self):  # loop de eventos e metodo de execucao
         while True:
@@ -29,11 +31,22 @@ class Game:
                     pygame.quit()
                     sys.exit()
 
-            # self.final_screen.run()
-            self.level.run()
+            self.playing.run()
             pygame.display.update()  # atualiza a tela
             # controle da taxa de quadros
             self.clock.tick(settings["general_settings"]["fps"])
+
+    def call_title(self):
+        self.playing = self.title_screen
+
+    def call_level(self):
+        self.playing = self.level
+
+    def call_gameover(self):
+        self.playing = self.gameover_screen
+
+    def call_final(self):
+        self.playing = self.final_screen
 
 
 if __name__ == '__main__':  # verificacao do nosso arquivo principal

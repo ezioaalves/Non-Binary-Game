@@ -10,7 +10,7 @@ from read_json import settings
 
 
 class Level:
-    def __init__(self):
+    def __init__(self, call_gameover, call_final):
 
         # busca a surface à ser mostrada
         self.display_surface = pygame.display.get_surface()
@@ -39,6 +39,10 @@ class Level:
         self.hit_sound.set_volume(0.2)
         self.shot_sound = pygame.mixer.Sound('audio/attack/disparo.wav')
         self.shot_sound.set_volume(0.2)
+
+        # screens
+        self.call_gameover = call_gameover
+        self.call_final = call_final
 
     def create_map(self):  # criando o dicionario
         layouts = {
@@ -85,7 +89,7 @@ class Level:
                                 if col == '374':
                                     monster_name = 'cliente'
                                 Enemy(monster_name, (x, y), [
-                                      self.visible_sprites, self.attackable_sprites], self.obstacles_sprites, self.damage_player, self.trigger_death_particles)
+                                      self.visible_sprites, self.attackable_sprites], self.obstacles_sprites, self.damage_player, self.trigger_death_particles, self.call_final)
 
     def create_attack(self):
         if self.player.energy >= 10:

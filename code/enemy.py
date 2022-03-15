@@ -1,8 +1,8 @@
 from ast import Pass
 import pygame
-from settings import *
 from entity import Entity
 from utils import *
+from read_json import settings
 
 
 class Enemy(Entity):
@@ -25,7 +25,7 @@ class Enemy(Entity):
 
         # atributos
         self.monster_name = monster_name
-        monster_info = monster_data[self.monster_name]
+        monster_info = settings['monster_data'][self.monster_name]
         self.health = monster_info['vida']
         self.speed = monster_info['velocidade']
         self.attack_damage = monster_info['dano']

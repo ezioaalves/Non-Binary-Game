@@ -2,6 +2,7 @@ import pygame
 import sys
 from level import Level
 from read_json import settings
+from screen import Screen
 
 
 class Game:
@@ -13,9 +14,13 @@ class Game:
         pygame.display.set_icon(icon)
         pygame.init()
         # criacao da superficie de exibicao
-        self.screen = pygame.display.set_mode((settings["general_settings"]["width"], settings["general_settings"]["height"]))
+        self.screen = pygame.display.set_mode(
+            (settings["general_settings"]["width"], settings["general_settings"]["height"]))
         self.clock = pygame.time.Clock()
         self.level = Level()
+        self.title_screen = Screen("title")
+        self.gameover_screen = Screen("gameover")
+        self.final_screen = Screen("final")
 
     def run(self):  # loop de eventos e metodo de execucao
         while True:
@@ -24,9 +29,11 @@ class Game:
                     pygame.quit()
                     sys.exit()
 
+            # self.final_screen.run()
             self.level.run()
             pygame.display.update()  # atualiza a tela
-            self.clock.tick(settings["general_settings"]["fps"])  # controle da taxa de quadros
+            # controle da taxa de quadros
+            self.clock.tick(settings["general_settings"]["fps"])
 
 
 if __name__ == '__main__':  # verificacao do nosso arquivo principal

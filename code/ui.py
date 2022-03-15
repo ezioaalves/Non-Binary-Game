@@ -7,7 +7,6 @@ class UI:
 
         # general
         self.display_surface = pygame.display.get_surface()
-        self.font = pygame.font.Font(settings['title_screen']['font'], settings['title_screen']['font_size'])
 
         # configurações das barras
         self.health_bar_rect = pygame.Rect(
@@ -17,7 +16,8 @@ class UI:
 
     def show_bar(self, current, max_amount, bg_rect, color):
         # desenha o fundo
-        pygame.draw.rect(self.display_surface, settings['ui_colors']['bg_color'], bg_rect)
+        pygame.draw.rect(self.display_surface,
+                         settings['ui_colors']['bg_color'], bg_rect)
 
         # convertendo atributos para pixels
         ratio = current/max_amount
@@ -27,7 +27,8 @@ class UI:
 
         # desenhando a barra
         pygame.draw.rect(self.display_surface, color, current_rect)
-        pygame.draw.rect(self.display_surface, settings['ui_colors']['border_color'], bg_rect, 3)
+        pygame.draw.rect(self.display_surface,
+                         settings['ui_colors']['border_color'], bg_rect, 3)
 
     def display(self, player):
         self.show_bar(

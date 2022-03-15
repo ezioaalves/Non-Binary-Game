@@ -150,19 +150,22 @@ class Player(Entity):
 
     def telepot(self):
         for sprite in self.portal_sprites:
+            centralize = pygame.math.Vector2(24, 24)
             if sprite.hitbox.colliderect(self.hitbox):
                 self.teleport_time = pygame.time.get_ticks()
 
                 self.teleporting = True
 
                 if 3400 < sprite.rect.topleft[0] < 3500:
-                    self.hitbox.topleft = (1776, 624)
+                    self.hitbox.center = (1776, 624)
                 elif 1700 < sprite.rect.topleft[0] < 1800:
-                    self.hitbox.topleft = (3456, 624)
+                    self.hitbox.center = (3456, 624)
                 elif 2200 < sprite.rect.topleft[0] < 2300:
-                    self.hitbox.topleft = (3936, 3888)
+                    self.hitbox.center = (3936, 3888)
                 else:
                     self.teleporting = False
+                    break
+                self.hitbox.center += centralize
                 self.status = 'baixo_parado'
 
     def update(self):

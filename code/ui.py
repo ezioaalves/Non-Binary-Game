@@ -1,5 +1,5 @@
 import pygame
-from settings import *
+from read_json import settings
 
 
 class UI:
@@ -7,17 +7,17 @@ class UI:
 
         # general
         self.display_surface = pygame.display.get_surface()
-        self.font = pygame.font.Font(UI_FONT, UI_FONT_SIZE)
+        self.font = pygame.font.Font(settings['title_screen']['font'], settings['title_screen']['font_size'])
 
         # configurações das barras
         self.health_bar_rect = pygame.Rect(
-            10, 10, HEALTH_BAR_WIDTH, BAR_HEIGHT)
+            10, 10, settings['ui']['health_bar_width'], settings['ui']['bar_height'])
         self.energy_bar_rect = pygame.Rect(
-            10, 34, ENERGY_BAR_WIDTH, BAR_HEIGHT)
+            10, 34, settings['ui']['energy_bar_width'], settings['ui']['bar_height'])
 
     def show_bar(self, current, max_amount, bg_rect, color):
         # desenha o fundo
-        pygame.draw.rect(self.display_surface, UI_BG_COLOR, bg_rect)
+        pygame.draw.rect(self.display_surface, settings['ui_colors']['bg_color'], bg_rect)
 
         # convertendo atributos para pixels
         ratio = current/max_amount
@@ -27,10 +27,10 @@ class UI:
 
         # desenhando a barra
         pygame.draw.rect(self.display_surface, color, current_rect)
-        pygame.draw.rect(self.display_surface, UI_BORDER_COLOR, bg_rect, 3)
+        pygame.draw.rect(self.display_surface, settings['ui_colors']['border_color'], bg_rect, 3)
 
     def display(self, player):
         self.show_bar(
-            player.health, player.stats['vida'], self.health_bar_rect, HEALTH_COLOR)
+            player.health, player.stats['vida'], self.health_bar_rect, settings['ui_colors']['health_color'])
         self.show_bar(
-            player.energy, player.stats['energia'], self.energy_bar_rect, ENERGY_COLOR)
+            player.energy, player.stats['energia'], self.energy_bar_rect, settings['ui_colors']['energy_color'])

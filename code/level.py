@@ -39,8 +39,8 @@ class Level:
         self.shot_sound = pygame.mixer.Sound('audio/attack/disparo.wav')
         self.shot_sound.set_volume(0.2)
 
-    'desenha o gráfico'
     def create_map(self):  # criando o dicionario
+        '''desenha o gráfico'''
         layouts = {
             # limite que define onde o jogador pode ou nao ir
             'boundary': import_csv_layout('graphics/Tileset/Mapa 1._Divisas.csv'),
@@ -88,7 +88,9 @@ class Level:
                                 Enemy(monster_name, (x, y), [
                                       self.visible_sprites, self.attackable_sprites], self.obstacles_sprites, self.damage_player, self.trigger_death_particles)
 
+    #dentro de player
     def damage_player(self, amount, attack_type):
+        '''aplica dano ao jogador e liga a invulnerabilidade temporária'''
         if self.player.vulnerable:
             self.player.health -= amount
             self.player.vulnerable = False
@@ -96,7 +98,9 @@ class Level:
             self.animation_player.create_particles(
                 attack_type, self.player.rect.center, [self.visible_sprites])
 
+    #dentro de inimigo
     def trigger_death_particles(self, pos, particle_type):
+        '''criar as animações de morte dos inimigos'''
         self.animation_player.create_particles(
             particle_type, pos, self.visible_sprites)
 

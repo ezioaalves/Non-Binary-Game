@@ -5,6 +5,11 @@ from read_json import settings
 
 
 class Game:
+    """
+    classe que é responsavel pela execução do jogo,
+    pelas configurações gerais, pela criação da superficie de exibição e pela 
+    verificação do arquivo princiapal.
+    """ 
     def __init__(self):
         # configuração geral
 
@@ -17,6 +22,7 @@ class Game:
         self.clock = pygame.time.Clock()
         self.level = Level()
 
+    '''método que começa o jogo'''
     def run(self):  # loop de eventos e metodo de execucao
         while True:
             for event in pygame.event.get():

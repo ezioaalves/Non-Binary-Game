@@ -1,7 +1,9 @@
 import pygame
 
-
 class ParticleEffect(pygame.sprite.Sprite):
+    """
+        class para os efeitos especiais
+    """ 
     def __init__(self, pos, animation_frames, groups):
         super().__init__(groups)
         self.frame_index = 0
@@ -11,6 +13,7 @@ class ParticleEffect(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=pos)
 
     def animate(self):
+        '''cria a animação das partículas de efeito'''
         self.frame_index += self.animation_speed
         if self.frame_index >= len(self.frames):
             self.kill()
@@ -18,4 +21,5 @@ class ParticleEffect(pygame.sprite.Sprite):
             self.image = self.frames[int(self.frame_index)]
 
     def update(self):
+        '''atualização'''
         self.animate()

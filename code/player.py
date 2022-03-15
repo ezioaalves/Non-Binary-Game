@@ -26,6 +26,9 @@ class Player(Entity):
         self.teleporting = False
         self.teleport_cooldown = 300
         self.teleport_time = None
+        self.teleport_sound = pygame.mixer.Sound(
+            'audio/teleporte/teleport.wav')
+        self.teleport_sound.set_volume(3)
 
         # atributos
         self.stats = {'vida': 100, 'energia': 60,
@@ -140,7 +143,7 @@ class Player(Entity):
 
     def recover(self):
         if self.energy <= self.stats['energia']:
-            self.energy += 0.05
+            self.energy += 0.1
         else:
             self.energy = self.stats['energia']
         if self.health <= self.stats['vida']:
@@ -158,14 +161,18 @@ class Player(Entity):
                 if 3400 < sprite.rect.topleft[0] < 3500:
                     print(sprite.rect.topleft)
                     self.hitbox.topleft = (1776, 624)
+                    self.teleport_sound.play()
                 elif 1700 < sprite.rect.topleft[0] < 1800:
                     print(sprite.rect.topleft)
                     self.hitbox.topleft = (3456, 624)
+                    self.teleport_sound.play()
                 elif 2200 < sprite.rect.topleft[0] < 2300:
                     print(sprite.rect.topleft)
                     self.hitbox.topleft = (3936, 3888)
+                    self.teleport_sound.play()
                 else:
                     print(sprite.rect.topleft)
+                    self.teleport_sound.play()
                 self.status = 'baixo_parado'
 
     def update(self):

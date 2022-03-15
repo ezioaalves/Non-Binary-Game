@@ -36,9 +36,11 @@ class Level:
 
         # sons
         self.hit_sound = pygame.mixer.Sound('audio/attack/acerto.wav')
-        self.hit_sound.set_volume(0.2)
+        self.hit_sound.set_volume(3)
         self.shot_sound = pygame.mixer.Sound('audio/attack/disparo.wav')
-        self.shot_sound.set_volume(0.2)
+        self.shot_sound.set_volume(3)
+        self.background = pygame.mixer.Sound('audio/background\level.wav')
+        self.background.set_volume(0.01)
 
         # screens
         self.call_gameover = call_gameover
@@ -89,7 +91,11 @@ class Level:
                                 if col == '374':
                                     monster_name = 'cliente'
                                 Enemy(monster_name, (x, y), [
-                                      self.visible_sprites, self.attackable_sprites], self.obstacles_sprites, self.damage_player, self.trigger_death_particles, self.call_final)
+                                      self.visible_sprites, self.attackable_sprites], self.obstacles_sprites, self.damage_player, self.trigger_death_particles, self.function)
+
+    def function(self):
+        self.background.stop()
+        self.call_final()
 
     def create_attack(self):
         if self.player.energy >= 10:
@@ -165,6 +171,7 @@ class Level:
         self.visible_sprites.update()
         self.visible_sprites.enemy_update(self.player)
         self.ui.display(self.player)
+        self.background.play(loops=-1)
 
 
 class YSortCameraGroup(pygame.sprite.Group):

@@ -8,7 +8,6 @@ from screen import Screen
 class Game:
     def __init__(self):
         # configuração geral
-
         icon = pygame.image.load('graphics/system/game_icon.png')
         pygame.display.set_caption('Non_Binary')
         pygame.display.set_icon(icon)
@@ -21,7 +20,6 @@ class Game:
         self.title_screen = Screen("title", self.call_level)
         self.gameover_screen = Screen("gameover", self.call_title)
         self.final_screen = Screen("final", self.call_title)
-        self.black_screen = Screen("black", self.call_black)
         self.playing = self.title_screen
 
     def run(self):  # loop de eventos e metodo de execucao

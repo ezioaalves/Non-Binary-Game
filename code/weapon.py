@@ -1,6 +1,10 @@
 import pygame
 
 
+"""
+    class responsável pela movimentação do jogador atravez das teclas W A S D,
+    com as  informações das direções, velocidade.
+"""
 class Weapon(pygame.sprite.Sprite):
     def __init__(self, player, groups) -> None:
         super().__init__(groups)

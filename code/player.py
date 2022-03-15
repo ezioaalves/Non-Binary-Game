@@ -7,6 +7,15 @@ from animation_player import AnimationPlayer
 
 
 class Player(Entity):
+    """
+        nesta class contém as sprits(parte responsavel pelas imagens de movimentação do jogador) e suas informações.
+        configurações das movimentações do jogador com suas direções.
+        movimentação do jogador no mapa.
+        teletransporte do jogador com suas configurações.
+        status do jogador, se esta em movimentação ou parado.
+        configurações do attacking.
+        animação do jogador e configurações da arma
+    """
     def __init__(self, pos, groups, obstacle_sprites, portal_sprites, point_sprites, attackable_sprites):
         super().__init__(groups)
         self.image = pygame.image.load(
@@ -58,8 +67,8 @@ class Player(Entity):
         # particulas
         self.animation_player = AnimationPlayer()
 
-    'carrega todos os sprites de todos os estados do jogador'
     def import_player_assets(self):
+        '''carrega todos os sprites de todos os estados do jogador'''
         character_path = 'graphics/player/'
         self.animations = {'cima': [], 'baixo': [], 'esquerda': [], 'direita': [],
                            'direita_parado': [], 'esquerda_parado': [], 'cima_parado': [], 'baixo_parado': []}
@@ -98,6 +107,7 @@ class Player(Entity):
                 self.create_attack()
 
     def move(self, speed):
+        '''responsável pela movimentação do jogador'''
         if self.attacking or self.teleporting:
             self.direction.x = 0
             self.direction.y = 0
@@ -110,10 +120,10 @@ class Player(Entity):
         self.hitbox.y += self.direction.y * speed
         self.collision('vertical')
         self.rect.center = self.hitbox.center
-        self.telepot()
+        self.teleport()
 
-    'verifica se o jogador'
     def get_status(self):
+        '''verifica os status do jogador e a posição em que ele parou'''
 
         # parado status
         if self.direction.x == 0 and self.direction.y == 0:
@@ -121,6 +131,7 @@ class Player(Entity):
                 self.status = self.status + '_parado'
 
     def cooldowns(self):
+        '''confere a pausa entre ações'''
         current_time = pygame.time.get_ticks()
 
         if self.attacking:
@@ -136,8 +147,8 @@ class Player(Entity):
             if current_time - self.teleport_time >= self.teleport_cooldown:
                 self.teleporting = False
 
-    'animação do sprite do jogador'
     def animate(self):
+        '''animação do sprite do jogador'''
         animation = self.animations[self.status]
 
         # loop over the frame index
@@ -156,8 +167,8 @@ class Player(Entity):
         else:
             self.image.set_alpha(255)
 
-    'recarrega a saúde e energia do jogador'
     def recover(self):
+        '''recarrega a saúde e energia do jogador'''
         if self.energy <= self.stats['energia']:
             self.energy += 0.05
         else:
@@ -167,27 +178,29 @@ class Player(Entity):
         else:
             self.health = self.stats['vida']
 
-    def telepot(self):
-        for sprite in self.portal_sprites:
-            if sprite.hitbox.colliderect(self.hitbox):
-                self.teleport_time = pygame.time.get_ticks()
-
-                self.teleporting = True
-
-                if 3400 < sprite.rect.topleft[0] < 3500:
-                    print(sprite.rect.topleft)
-                    self.hitbox.topleft = (1776, 624)
-                elif 1700 < sprite.rect.topleft[0] < 1800:
-                    print(sprite.rect.topleft)
-                    self.hitbox.topleft = (3456, 624)
-                elif 2200 < sprite.rect.topleft[0] < 2300:
-                    print(sprite.rect.topleft)
-                    self.hitbox.topleft = (3936, 3888)
-                else:
-                    print(sprite.rect.topleft)
+    def teleport(self): 
+        '''verifica a área do teletransporte e se o jogador entrou nela, com as informações para acontecer o teletransporte'''
+        for sprite in self.portal_sprites: 
+            centralize = pygame.math.Vector2(24, 24) 
+            if sprite.hitbox.colliderect(self.hitbox): 
+                self.teleport_time = pygame.time.get_ticks() 
+ 
+                self.teleporting = True 
+ 
+                if 3400 < sprite.rect.topleft[0] < 3500: 
+                    self.hitbox.center = (1776, 624) 
+                elif 1700 < sprite.rect.topleft[0] < 1800: 
+                    self.hitbox.center = (3456, 624) 
+                elif 2200 < sprite.rect.topleft[0] < 2300: 
+                    self.hitbox.center = (3936, 3888) 
+                else: 
+                    self.teleporting = False 
+                    break 
+                self.hitbox.center += centralize 
                 self.status = 'baixo_parado'
 
     def create_attack(self):
+        '''cria o sprite de disparo'''
         if self.energy >= 10:
             self.shot_sound.play()
             self.current_attack = Weapon(self, [self.visible_sprites])

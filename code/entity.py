@@ -14,6 +14,7 @@ class Entity(pygame.sprite.Sprite, abc.ABC):
         self.invicible_duration = 300
 
     def move(self, speed):
+        '''define a movimentação'''
 
         if self.direction.magnitude() != 0:
             self.direction = self.direction.normalize()
@@ -48,7 +49,8 @@ class Entity(pygame.sprite.Sprite, abc.ABC):
     @abc.abstractclassmethod
     def cooldowns(self):
         pass
-
+    
+    '''efeito de piscar no jogador'''
     def wave_value(self):
         value = sin(pygame.time.get_ticks())
         if value >= 0:

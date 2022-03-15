@@ -52,6 +52,7 @@ class Enemy(Entity):
         self.attack_sound.set_volume(0.2)
 
     def import_graphics(self, name):
+        '''carrega os sprites do inimigo'''
         self.animations = {'ataque': [], 'andando': [], 'parado': []}
         main_path = f'graphics\enemies/{name}/'
         for animation in self.animations.keys():
@@ -59,6 +60,7 @@ class Enemy(Entity):
             self.animations[animation] = import_folder(full_path)
 
     def get_player_distance_direction(self, player):
+        '''pega a direção em que o inimigo irá se mover'''
         enemy_vec = pygame.math.Vector2(self.rect.center)
         player_vec = pygame.math.Vector2(player.rect.center)
         distance = (player_vec-enemy_vec).magnitude()
@@ -71,6 +73,7 @@ class Enemy(Entity):
         return (distance, direction)
 
     def get_status(self, player):
+        '''pega o status em que o inimigo está'''
         distance = self.get_player_distance_direction(player)[0]
 
         if distance <= self.attack_radius and self.can_attack:
@@ -83,6 +86,7 @@ class Enemy(Entity):
             self.status = 'parado'
 
     def actions(self, player):
+        '''determina as ações do inimigo'''
         if self.status == 'ataque':
             self.attack_time = pygame.time.get_ticks()
             self.damage_player(self.attack_damage, self.attack_type)
@@ -93,6 +97,7 @@ class Enemy(Entity):
             self.direction = pygame.math.Vector2()
 
     def animate(self):
+        '''cria a animação do inimigo'''
         animation = self.animations[self.status]
 
         # loop over the frame index
@@ -113,6 +118,7 @@ class Enemy(Entity):
             self.image.set_alpha(255)
 
     def cooldowns(self):
+        '''tempo de espera entre cada ação do inimigo'''
         if not self.can_attack:
             current_time = pygame.time.get_ticks()
             if current_time - self.attack_time >= self.attack_cooldown:
@@ -127,6 +133,7 @@ class Enemy(Entity):
                 self.function()
 
     def get_damage(self, player):
+        '''gerencia o dano causado pelo jogador no inimigo'''
         if self.vulnerable:
             self.health -= player.attack
             if self.health <= 0:

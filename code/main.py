@@ -6,6 +6,11 @@ from screen import Screen
 
 
 class Game:
+    """
+    classe que é responsavel pela execução do jogo,
+    pelas configurações gerais, pela criação da superficie de exibição e pela 
+    verificação do arquivo princiapal.
+    """ 
     def __init__(self):
         # configuração geral
         icon = pygame.image.load('graphics/system/game_icon.png')
@@ -22,6 +27,7 @@ class Game:
         self.final_screen = Screen("final", self.call_title)
         self.playing = self.title_screen
 
+    '''método que começa o jogo'''
     def run(self):  # loop de eventos e metodo de execucao
         while True:
             for event in pygame.event.get():

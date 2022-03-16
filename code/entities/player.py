@@ -1,9 +1,9 @@
 import pygame
 from weapon import Weapon
 from utils import import_folder
-from entity import Entity
+from . import Entity
 from read_json import settings
-from animation_player import AnimationPlayer
+from visual import AnimationPlayer
 
 
 class Player(Entity):
@@ -16,6 +16,7 @@ class Player(Entity):
         configurações do attacking.
         animação do jogador e configurações da arma
     """
+
     def __init__(self, pos, groups, obstacle_sprites, portal_sprites, point_sprites, attackable_sprites):
         super().__init__(groups)
         self.image = pygame.image.load(
@@ -69,7 +70,6 @@ class Player(Entity):
 
         # particulas
         self.animation_player = AnimationPlayer()
-
 
     def import_player_assets(self):
         '''carrega todos os sprites de todos os estados do jogador'''
@@ -150,8 +150,7 @@ class Player(Entity):
         if self.teleporting:
             if current_time - self.teleport_time >= self.teleport_cooldown:
                 self.teleporting = False
-                
-                
+
     def animate(self):
         '''animação do sprite do jogador'''
         animation = self.animations[self.status]
@@ -172,7 +171,6 @@ class Player(Entity):
         else:
             self.image.set_alpha(255)
 
-
     def recover(self):
         '''recarrega a saúde e energia do jogador'''
         if self.energy <= self.stats['energia']:
@@ -184,25 +182,26 @@ class Player(Entity):
         else:
             self.health = self.stats['vida']
 
-    def teleport(self): 
+    def teleport(self):
         '''verifica a área do teletransporte e se o jogador entrou nela, com as informações para acontecer o teletransporte'''
-        for sprite in self.portal_sprites: 
-            centralize = pygame.math.Vector2(24, 24) 
-            if sprite.hitbox.colliderect(self.hitbox): 
-                self.teleport_time = pygame.time.get_ticks() 
- 
-                self.teleporting = True 
- 
-                if 3400 < sprite.rect.topleft[0] < 3500: 
-                    self.hitbox.center = (1776, 624) 
-                elif 1700 < sprite.rect.topleft[0] < 1800: 
-                    self.hitbox.center = (3456, 624) 
-                elif 2200 < sprite.rect.topleft[0] < 2300: 
-                    self.hitbox.center = (3936, 3888) 
-                else: 
-                    self.teleporting = False 
-                    break 
-                self.hitbox.center += centralize 
+        for sprite in self.portal_sprites:
+            centralize = pygame.math.Vector2(24, 24)
+            if sprite.hitbox.colliderect(self.hitbox):
+                self.teleport_time = pygame.time.get_ticks()
+
+                self.teleporting = True
+
+                if 3400 < sprite.rect.topleft[0] < 3500:
+                    self.hitbox.center = (1776, 624)
+                elif 1700 < sprite.rect.topleft[0] < 1800:
+                    self.hitbox.center = (3456, 624)
+                elif 2200 < sprite.rect.topleft[0] < 2300:
+                    self.hitbox.center = (3936, 3888)
+                else:
+                    self.teleporting = False
+                    break
+                self.hitbox.center += centralize
+                self.status = 'baixo_parado'
 
     def create_attack(self):
         '''cria o sprite de disparo'''

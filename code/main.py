@@ -1,8 +1,8 @@
 import pygame
 import sys
-from level import Level
+from visual import Level
 from read_json import settings
-from screen import Screen
+from visual import Screen
 
 
 class Game:
@@ -10,7 +10,8 @@ class Game:
     classe que é responsavel pela execução do jogo,
     pelas configurações gerais, pela criação da superficie de exibição e pela 
     verificação do arquivo princiapal.
-    """ 
+    """
+
     def __init__(self):
         # configuração geral
         icon = pygame.image.load('graphics/system/game_icon.png')
@@ -28,6 +29,7 @@ class Game:
         self.playing = self.title_screen
 
     '''método que começa o jogo'''
+
     def run(self):  # loop de eventos e metodo de execucao
         while True:
             for event in pygame.event.get():

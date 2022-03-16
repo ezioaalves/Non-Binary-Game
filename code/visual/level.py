@@ -1,11 +1,11 @@
 import pygame
-from animation_player import AnimationPlayer
+from . import AnimationPlayer
 from utils import *
-from tile import Tile
-from player import Player
+from . import Tile
+from entities import Player
 from weapon import Weapon
-from ui import UI
-from enemy import Enemy
+from . import UI
+from entities import Enemy
 from read_json import settings
 
 
@@ -49,11 +49,11 @@ class Level:
         '''desenha o gráfico'''
         layouts = {
             # limite que define onde o jogador pode ou nao ir
-            'boundary': import_csv_layout('graphics/Tileset/Mapa 1._Divisas.csv'),
+            'boundary': import_csv_layout('graphics/Tileset/Mapa_Divisas.csv'),
             # define as posicoes dos objetos no mapa
-            'objects': import_csv_layout('graphics/Tileset/Mapa 1._Objetos.csv'),
-            'entities': import_csv_layout('graphics/Tileset/Mapa 1._Inimigos.csv'),
-            'portals': import_csv_layout('graphics/Tileset/Mapa 1._Teletransporte.csv')
+            'objects': import_csv_layout('graphics/Tileset/Mapa_Objetos.csv'),
+            'entities': import_csv_layout('graphics/Tileset/Mapa_Inimigos.csv'),
+            'portals': import_csv_layout('graphics/Tileset/Mapa_Teletransporte.csv')
         }
         graphics = {
             'objects': import_folder('graphics/Tileset/Objetos')
@@ -141,7 +141,7 @@ class YSortCameraGroup(pygame.sprite.Group):
 
         # criando o piso
         self.floor_surf = pygame.image.load(
-            'graphics/Tileset/Mapa 1.png').convert()
+            'graphics/Tileset/Mapa.png').convert()
         self.floor_rect = self.floor_surf.get_rect(topleft=(0, 0))
 
     def custom_draw(self, player):

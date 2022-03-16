@@ -1,6 +1,6 @@
 from ast import Pass
 import pygame
-from entity import Entity
+from .entity import Entity
 from utils import *
 from read_json import settings
 

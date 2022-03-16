@@ -1,4 +1,4 @@
-from particle_effect import ParticleEffect
+from .particle_effect import ParticleEffect
 from utils import import_folder
 
 
@@ -6,6 +6,8 @@ from utils import import_folder
     Class responsavel pelas animações do player,
     no qual tem a interação do inimigo e jogador. 
 """
+
+
 class AnimationPlayer:
     def __init__(self):
         self.frames = {

@@ -156,12 +156,12 @@ class Player(Entity):
         animation = self.animations[self.status]
 
         # loop over the frame index
-        self.frame_index += self.animation_speed
-        if self.frame_index >= len(animation):
-            self.frame_index = 0
+        self.set_frame_index(self.get_frame_index() + self.get_animation_speed())
+        if self.get_frame_index() >= len(animation):
+            self.set_frame_index(0)
 
         # set the image
-        self.image = animation[int(self.frame_index)]
+        self.image = animation[int(self.get_frame_index())]
         self.rect = self.image.get_rect(center=self.hitbox.center)
 
         # piscar

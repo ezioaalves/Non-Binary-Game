@@ -65,7 +65,7 @@ class Entity(pygame.sprite.Sprite, abc.ABC):
     def animate(self):
         pass
 
-    @abc.abstractclassmethod
+    @abc.abstractmethod
     def cooldowns(self):
         pass
     

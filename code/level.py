@@ -97,6 +97,10 @@ class Level:
         self.background.stop()
         self.call_final()
 
+    def function_gameover(self):
+        self.background.stop()
+        self.call_gameover()
+
     def damage_player(self, amount, attack_type):
         '''aplica dano ao jogador e liga a invulnerabilidade temporária'''
         if self.player.vulnerable:

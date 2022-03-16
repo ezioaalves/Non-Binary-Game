@@ -22,11 +22,7 @@ class Game:
         self.screen = pygame.display.set_mode(
             (settings["general_settings"]["width"], settings["general_settings"]["height"]))
         self.clock = pygame.time.Clock()
-        self.level = Level(self.call_gameover, self.call_final)
-        self.title_screen = Screen("title", self.call_level)
-        self.gameover_screen = Screen("gameover", self.call_title)
-        self.final_screen = Screen("final", self.call_title)
-        self.playing = self.title_screen
+        self.playing = Screen("title", self.call_level)
 
     '''método que começa o jogo'''
 
@@ -43,20 +39,16 @@ class Game:
             self.clock.tick(settings["general_settings"]["fps"])
 
     def call_title(self):
-        self.title_screen = Screen("title", self.call_level)
-        self.playing = self.title_screen
+        self.playing = Screen("title", self.call_level)
 
     def call_level(self):
-        self.level = Level(self.call_gameover, self.call_final)
-        self.playing = self.level
+        self.playing = Level(self.call_gameover, self.call_final)
 
     def call_gameover(self):
-        self.gameover_screen = Screen("gameover", self.call_title)
-        self.playing = self.gameover_screen
+        self.playing = Screen("gameover", self.call_title)
 
     def call_final(self):
-        self.final_screen = Screen("final", self.call_title)
-        self.playing = self.final_screen
+        self.playing = Screen("final", self.call_title)
 
 
 if __name__ == '__main__':  # verificacao do nosso arquivo principal

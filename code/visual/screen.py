@@ -10,7 +10,7 @@ class Screen:
             settings['screen_img'][screen_type])
         self.background_sound = pygame.mixer.Sound(
             'lib/audio/screen/'+screen_type+'.wav')
-        self.background_sound.set_volume(0.2)
+        self.background_sound.set_volume(0.05)
         self.function = function
         self.call_time = None
         self.call_trigger = False

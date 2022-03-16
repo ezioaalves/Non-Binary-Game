@@ -5,6 +5,8 @@ import pygame
     class responsável pela movimentação do jogador atravez das teclas W A S D,
     com as  informações das direções, velocidade.
 """
+
+
 class Weapon(pygame.sprite.Sprite):
     def __init__(self, player, groups) -> None:
         super().__init__(groups)
@@ -13,6 +15,12 @@ class Weapon(pygame.sprite.Sprite):
         # graficos
         full_path = f'lib/graphics/weapons/twelve_{direction}.png'
         self.image = pygame.image.load(full_path).convert_alpha()
+
+        # sons
+        self.hit_sound = pygame.mixer.Sound('lib/audio/attack/hit.wav')
+        self.hit_sound.set_volume(0.2)
+        self.shot_sound = pygame.mixer.Sound('lib/audio/attack/shot.wav')
+        self.shot_sound.set_volume(0.2)
 
         # posição
         if direction == 'right':
@@ -27,3 +35,9 @@ class Weapon(pygame.sprite.Sprite):
         elif direction == 'up':
             self.rect = self.image.get_rect(
                 midbottom=player.rect.midtop+pygame.math.Vector2(0, 0))
+
+    def shot_play(self):
+        self.shot_sound.play()
+
+    def hit_play(self):
+        self.hit_sound.play()

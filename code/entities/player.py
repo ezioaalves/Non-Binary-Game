@@ -34,19 +34,13 @@ class Player(Entity):
         self.current_attack = None
         self.visible_sprites = groups[0]
 
-        # sounds
-        self.hit_sound = pygame.mixer.Sound('lib/audio/attack/hit.wav')
-        self.hit_sound.set_volume(0.2)
-        self.shot_sound = pygame.mixer.Sound('lib/audio/attack/shot.wav')
-        self.shot_sound.set_volume(0.2)
-
         # teleporting
         self.teleporting = False
         self.teleport_cooldown = 300
         self.teleport_time = None
         self.teleport_sound = pygame.mixer.Sound(
             'lib/audio/portal/portal.wav')
-        self.teleport_sound.set_volume(3)
+        self.teleport_sound.set_volume(0.5)
 
         # attributes
         self.stats = {'health': 100, 'energy': 60,
@@ -187,6 +181,7 @@ class Player(Entity):
         for sprite in self.portal_sprites:
             centralize = pygame.math.Vector2(24, 24)
             if sprite.hitbox.colliderect(self.hitbox):
+                self.teleport_sound.play()
                 self.teleport_time = pygame.time.get_ticks()
 
                 self.teleporting = True
@@ -206,8 +201,8 @@ class Player(Entity):
     def create_attack(self):
         '''cria o sprite de disparo'''
         if self.energy >= 10:
-            self.shot_sound.play()
             self.current_attack = Weapon(self, [self.visible_sprites])
+            self.current_attack.shot_play()
             self.energy -= 10
             # direção em que o tiro vai se mover
             facing = self.status.split('_')[0]
@@ -253,7 +248,7 @@ class Player(Entity):
                             self.animation_player.create_particles(
                                 'gun', position, [self.visible_sprites])
                 if hit or hit_damage:
-                    self.hit_sound.play()
+                    self.current_attack.hit_play()
                     break
 
     '''destrói o sprite de disparo'''

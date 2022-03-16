@@ -34,11 +34,12 @@ class Level:
 
         # sons
         self.hit_sound = pygame.mixer.Sound('lib/audio/attack/hit.wav')
-        self.hit_sound.set_volume(3)
+        self.hit_sound.set_volume(2)
         self.shot_sound = pygame.mixer.Sound('lib/audio/attack/shot.wav')
-        self.shot_sound.set_volume(3)
+        self.shot_sound.set_volume(2)
         self.background = pygame.mixer.Sound('lib/audio/background/level.wav')
-        self.background.set_volume(0.01)
+        self.background.set_volume(0.05)
+        pygame.mixer.Channel(1).play(self.background, loops=-1)
 
         # configuração de sprite
         self.create_map()
@@ -111,4 +112,3 @@ class Level:
         self.visible_sprites.update()
         self.visible_sprites.enemy_update(self.player)
         self.ui.display(self.player)
-        self.background.play(loops=-1)

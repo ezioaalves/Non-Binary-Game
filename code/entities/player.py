@@ -1,6 +1,6 @@
 import pygame
 from weapon import Weapon
-from utils import import_folder
+from utils import import_folder, input
 from . import Entity
 from read_json import settings
 from visual import AnimationPlayer
@@ -80,34 +80,7 @@ class Player(Entity):
             full_path = character_path + animation
             self.animations[animation] = import_folder(full_path)
 
-    def input(self):
-        if not self.attacking and not self.teleporting:
-            keys = pygame.key.get_pressed()
-
-            # movement input
-            if keys[pygame.K_w]:
-                self.direction.y = -1
-                self.status = 'up'
-            elif keys[pygame.K_s]:
-                self.direction.y = 1
-                self.status = 'down'
-            else:
-                self.direction.y = 0
-
-            if keys[pygame.K_d]:
-                self.direction.x = 1
-                self.status = 'right'
-            elif keys[pygame.K_a]:
-                self.direction.x = -1
-                self.status = 'left'
-            else:
-                self.direction.x = 0
-
-            # Tecla de disparo
-            if keys[pygame.K_SPACE]:
-                self.attacking = True
-                self.attack_time = pygame.time.get_ticks()
-                self.create_attack()
+    
 
     def move(self, speed):
         '''responsável pela movimentação do jogador'''
@@ -264,7 +237,7 @@ class Player(Entity):
         self.current_attack = None
 
     def update(self):
-        self.input()
+        input(self)
         self.get_status()
         self.animate()
         self.cooldowns()

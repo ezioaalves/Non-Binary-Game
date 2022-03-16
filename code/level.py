@@ -91,11 +91,15 @@ class Level:
                                 if col == '374':
                                     monster_name = 'cliente'
                                 Enemy(monster_name, (x, y), [
-                                      self.visible_sprites, self.attackable_sprites], self.obstacles_sprites, self.damage_player, self.trigger_death_particles, self.function)
+                                      self.visible_sprites, self.attackable_sprites], self.obstacles_sprites, self.damage_player, self.trigger_death_particles, self.function_final)
 
-    def function(self):
+    def function_final(self):
         self.background.stop()
         self.call_final()
+
+    def function_gameover(self):
+        self.background.stop()
+        self.call_gameover()
 
     def create_attack(self):
         if self.player.energy >= 10:
@@ -160,6 +164,10 @@ class Level:
             self.player.hurt_time = pygame.time.get_ticks()
             self.animation_player.create_particles(
                 attack_type, self.player.rect.center, [self.visible_sprites])
+        if self.player.health <= 0:
+            self.player.kill()
+            self.background.stop()
+            self.function_gameover()
 
     def trigger_death_particles(self, pos, particle_type):
         self.animation_player.create_particles(

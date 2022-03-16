@@ -6,12 +6,30 @@ from math import sin
 class Entity(pygame.sprite.Sprite, abc.ABC):
     def __init__(self, groups):
         super().__init__(groups)
-        self.frame_index = 0
-        self.animation_speed = 0.06
+        self.__frame_index = 0
+        self.__animation_speed = 0.06
         self.direction = pygame.math.Vector2()
         self.vulnerable = True
         self.hit_time = None
-        self.invicible_duration = 300
+        self.__invicible_duration = 300
+
+    def set_frame_index(self, value):
+        self.__frame_index = value
+    
+    def get_frame_index(self):
+        return self.__frame_index
+    
+    def set_animation_speed(self, value):
+        self.__animation_speed = value
+    
+    def get_animation_speed(self):
+        return self.__animation_speed
+    
+    def set_invicible_duration(self, value):
+        self.__invicible_duration = value
+    
+    def get_invicible_duration(self):
+        return self.__invicible_duration
 
     def move(self, speed):
         '''define a movimentação'''
@@ -26,6 +44,7 @@ class Entity(pygame.sprite.Sprite, abc.ABC):
         self.rect.center = self.hitbox.center
 
     def collision(self, direction):
+        '''recebe a direção na qual a entidade está se movendo e verifica as colisões nessa direção'''
         if direction == 'horizontal':
             for sprite in self.obstacle_sprites:
                 if sprite.hitbox.colliderect(self.hitbox):
@@ -50,8 +69,8 @@ class Entity(pygame.sprite.Sprite, abc.ABC):
     def cooldowns(self):
         pass
     
-    '''efeito de piscar no jogador'''
     def wave_value(self):
+        '''efeito de piscar no jogador'''
         value = sin(pygame.time.get_ticks())
         if value >= 0:
             return 255

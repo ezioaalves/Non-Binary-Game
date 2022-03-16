@@ -24,14 +24,13 @@ class Level:
         self.attackable_sprites = pygame.sprite.Group()
         self.point_sprites = pygame.sprite.Group()
 
-        # configuração de sprite
-        self.create_map()
+        # player
+        self.player = Player((0, 0), [self.visible_sprites], self.obstacles_sprites,
+                             self.portals_sprites, self.point_sprites, self.attackable_sprites)
 
-        # Interface de Usuario
-        self.ui = UI()
-
-        # particulas
-        self.animation_player = AnimationPlayer()
+        # screens
+        self.call_gameover = call_gameover
+        self.call_final = call_final
 
         # sons
         self.hit_sound = pygame.mixer.Sound('lib/audio/attack/hit.wav')
@@ -41,14 +40,14 @@ class Level:
         self.background = pygame.mixer.Sound('lib/audio/background/level.wav')
         self.background.set_volume(0.01)
 
-        # screens
-        self.call_gameover = call_gameover
-        self.call_final = call_final
+        # configuração de sprite
+        self.create_map()
 
-        # player
-        self.player = Player((0, 0), [self.visible_sprites], self.obstacles_sprites,
-                             self.portals_sprites, self.point_sprites, self.attackable_sprites)
-        print(self.player.health)
+        # Interface de Usuario
+        self.ui = UI()
+
+        # particulas
+        self.animation_player = AnimationPlayer()
 
     def create_map(self):  # criando o dicionario
         '''desenha o gráfico'''
@@ -88,16 +87,15 @@ class Level:
                         if style == 'entities':
                             if col == '266':
                                 # define o jogador e sua position inicial
-                                #self.player.hitbox.center = (x, y)
+                                self.player.hitbox.center = (x+24, y+24)
                                 pass
                             else:
                                 if col == '230':
                                     monster_name = 'bug'
                                 if col == '374':
                                     monster_name = 'client'
-                                #player = self.player
-                                # Enemy(monster_name, (x, y), [
-                                #     self.visible_sprites, self.attackable_sprites], self.obstacles_sprites, player, self.function_final, self.function_gameover)
+                                Enemy(monster_name, (x, y), [
+                                    self.visible_sprites, self.attackable_sprites], self.obstacles_sprites, self.player, self.function_final, self.function_gameover)
 
     def function_final(self):
         self.background.stop()

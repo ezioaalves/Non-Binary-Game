@@ -18,6 +18,7 @@ class Enemy(Entity):
         self.image = pygame.image.load(
             'lib/graphics/enemies/bug/idle/0.png').convert_alpha()
         self.animation_player = AnimationPlayer()
+        self.visible_sprites = groups[0]
 
         # movimento
         self.rect = self.image.get_rect(topleft=pos)
@@ -41,7 +42,7 @@ class Enemy(Entity):
         self.attack_cooldown = 800
         self.player = player
         self.function_final = function_final
-        self.function_gameover = function_gameover()
+        self.function_gameover = function_gameover
         self.final_kill = None
         self.final_trigger = False
 
@@ -132,7 +133,7 @@ class Enemy(Entity):
         if self.final_trigger:
             current_time = pygame.time.get_ticks()
             if current_time - self.final_kill >= 1000:
-                self.function()
+                self.function_final()
                 self.kill()
 
     def get_damage(self, player):

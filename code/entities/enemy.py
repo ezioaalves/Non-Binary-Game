@@ -101,7 +101,8 @@ class Enemy(Entity):
         animation = self.animations[self.status]
 
         # loop over the frame index
-        self.set_frame_index(self.get_frame_index() + self.get_animation_speed())
+        self.set_frame_index(self.get_frame_index() +
+                             self.get_animation_speed())
         if self.get_frame_index() >= len(animation):
             if self.status == 'attack':
                 self.can_attack = False

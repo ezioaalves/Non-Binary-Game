@@ -8,12 +8,11 @@ from visual import AnimationPlayer
 
 class Player(Entity):
     """
-        nesta class contém as sprits(parte responsavel pelas imagens de movimentação do jogador) e suas informações.
+        nesta class contém as sprites(parte responsavel pelas imagens de movimentação do jogador) e suas informações.
         configurações das movimentações do jogador com suas direções.
-        movimentação do jogador no mapa.
         teletransporte do jogador com suas configurações.
-        status do jogador, se esta em movimentação ou parado.
-        configurações do attacking.
+        status do jogador, se está em movimentação ou parado.
+        configurações dos ataques.
         animação do jogador e configurações da arma
     """
 
@@ -35,7 +34,7 @@ class Player(Entity):
         self.current_attack = None
         self.visible_sprites = groups[0]
 
-        # sons
+        # sounds
         self.hit_sound = pygame.mixer.Sound('lib/audio/attack/hit.wav')
         self.hit_sound.set_volume(0.2)
         self.shot_sound = pygame.mixer.Sound('lib/audio/attack/shot.wav')
@@ -49,7 +48,7 @@ class Player(Entity):
             'lib/audio/portal/portal.wav')
         self.teleport_sound.set_volume(3)
 
-        # atributos
+        # attributes
         self.stats = {'health': 100, 'energy': 60,
                       'attack': 30, 'speed': 6}
         self.health = self.stats['health']
@@ -156,7 +155,8 @@ class Player(Entity):
         animation = self.animations[self.status]
 
         # loop over the frame index
-        self.set_frame_index(self.get_frame_index() + self.get_animation_speed())
+        self.set_frame_index(self.get_frame_index() +
+                             self.get_animation_speed())
         if self.get_frame_index() >= len(animation):
             self.set_frame_index(0)
 

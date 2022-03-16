@@ -129,21 +129,23 @@ class Enemy(Entity):
                 self.vulnerable = True
         if self.final_trigger:
             current_time = pygame.time.get_ticks()
-            if current_time - self.final_kill >= 400:
+            if current_time - self.final_kill >= 1000:
                 self.function()
+                self.kill()
 
     def get_damage(self, player):
         '''gerencia o dano causado pelo jogador no inimigo'''
         if self.vulnerable:
             self.health -= player.attack
             if self.health <= 0:
-                self.kill()
                 self.trigger_death_particles(
                     self.rect.center, self.monster_name)
                 self.death_sound.play()
                 if self.monster_name == 'cliente':
                     self.final_kill = pygame.time.get_ticks()
                     self.final_trigger = True
+                else:
+                    self.kill()
             self.hit_time = pygame.time.get_ticks()
             self.vulnerable = False
             self.direction = self.get_player_distance_direction(player)[1]

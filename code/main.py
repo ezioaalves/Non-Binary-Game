@@ -41,15 +41,19 @@ class Game:
             self.clock.tick(settings["general_settings"]["fps"])
 
     def call_title(self):
+        self.title_screen = Screen("title", self.call_level)
         self.playing = self.title_screen
 
     def call_level(self):
+        self.level = Level(self.call_gameover, self.call_final)
         self.playing = self.level
 
     def call_gameover(self):
+        self.gameover_screen = Screen("gameover", self.call_title)
         self.playing = self.gameover_screen
 
     def call_final(self):
+        self.final_screen = Screen("final", self.call_title)
         self.playing = self.final_screen
 
 

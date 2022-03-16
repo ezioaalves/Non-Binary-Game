@@ -24,6 +24,23 @@ class Level:
         self.attackable_sprites = pygame.sprite.Group()
         self.point_sprites = pygame.sprite.Group()
 
+        # player
+        self.player = Player((0, 0), [self.visible_sprites], self.obstacles_sprites,
+                             self.portals_sprites, self.point_sprites, self.attackable_sprites)
+
+        # screens
+        self.call_gameover = call_gameover
+        self.call_final = call_final
+
+        # sons
+        self.hit_sound = pygame.mixer.Sound('lib/audio/attack/hit.wav')
+        self.hit_sound.set_volume(2)
+        self.shot_sound = pygame.mixer.Sound('lib/audio/attack/shot.wav')
+        self.shot_sound.set_volume(2)
+        self.background = pygame.mixer.Sound('lib/audio/background/level.wav')
+        self.background.set_volume(0.05)
+        pygame.mixer.Channel(1).play(self.background, loops=-1)
+
         # configuração de sprite
         self.create_map()
 
@@ -32,18 +49,6 @@ class Level:
 
         # particulas
         self.animation_player = AnimationPlayer()
-
-        # sons
-        self.hit_sound = pygame.mixer.Sound('lib/audio/attack/hit.wav')
-        self.hit_sound.set_volume(3)
-        self.shot_sound = pygame.mixer.Sound('lib/audio/attack/shot.wav')
-        self.shot_sound.set_volume(3)
-        self.background = pygame.mixer.Sound('lib/audio/background/level.wav')
-        self.background.set_volume(0.01)
-
-        # screens
-        self.call_gameover = call_gameover
-        self.call_final = call_final
 
     def create_map(self):  # criando o dicionario
         '''desenha o gráfico'''
@@ -83,15 +88,15 @@ class Level:
                         if style == 'entities':
                             if col == '266':
                                 # define o jogador e sua position inicial
-                                self.player = Player((x, y), [
-                                                     self.visible_sprites], self.obstacles_sprites, self.portals_sprites, self.point_sprites, self.attackable_sprites)
+                                self.player.hitbox.center = (x+24, y+24)
+                                pass
                             else:
                                 if col == '230':
                                     monster_name = 'bug'
                                 if col == '374':
                                     monster_name = 'client'
                                 Enemy(monster_name, (x, y), [
-                                      self.visible_sprites, self.attackable_sprites], self.obstacles_sprites, self.damage_player, self.trigger_death_particles, self.function_final)
+                                    self.visible_sprites, self.attackable_sprites], self.obstacles_sprites, self.player, self.function_final, self.function_gameover)
 
     def function_final(self):
         self.background.stop()
@@ -101,29 +106,9 @@ class Level:
         self.background.stop()
         self.call_gameover()
 
-    def damage_player(self, amount, attack_type):
-        '''aplica dano ao jogador e liga a invulnerabilidade temporária'''
-        if self.player.vulnerable:
-            self.player.health -= amount
-            self.player.vulnerable = False
-            self.player.hurt_time = pygame.time.get_ticks()
-            self.animation_player.create_particles(
-                attack_type, self.player.rect.center, [self.visible_sprites])
-        if self.player.health <= 0:
-            self.player.kill()
-            self.background.stop()
-            self.function_gameover()
-
-    # dentro de inimigo
-    def trigger_death_particles(self, pos, particle_type):
-        '''criar as animações de morte dos inimigos'''
-        self.animation_player.create_particles(
-            particle_type, pos, self.visible_sprites)
-
     def run(self):
         # atualiza e desenha o jogo
         self.visible_sprites.custom_draw(self.player)
         self.visible_sprites.update()
         self.visible_sprites.enemy_update(self.player)
         self.ui.display(self.player)
-        self.background.play(loops=-1)

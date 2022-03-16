@@ -1,12 +1,12 @@
-from ast import Pass
 import pygame
 from .entity import Entity
 from utils import *
 from read_json import settings
+from visual import AnimationPlayer
 
 
 class Enemy(Entity):
-    def __init__(self, monster_name, pos, groups, obstacle_sprites, damage_player, trigger_death_particles, function):
+    def __init__(self, monster_name, pos, groups, obstacle_sprites, player, function_final, function_gameover):
 
         # configuração geral
         super().__init__(groups)
@@ -17,6 +17,8 @@ class Enemy(Entity):
         self.status = 'idle'
         self.image = pygame.image.load(
             'lib/graphics/enemies/bug/idle/0.png').convert_alpha()
+        self.animation_player = AnimationPlayer()
+        self.visible_sprites = groups[0]
 
         # movimento
         self.rect = self.image.get_rect(topleft=pos)
@@ -38,18 +40,22 @@ class Enemy(Entity):
         self.can_attack = True
         self.attack_time = None
         self.attack_cooldown = 800
-        self.damage_player = damage_player
-        self.trigger_death_particles = trigger_death_particles
-        self.function = function
+        self.player = player
+        self.function_final = function_final
+        self.function_gameover = function_gameover
         self.final_kill = None
         self.final_trigger = False
+        self.deleted_time = None
+        self.deleted_player = False
 
         # sons
         self.death_sound = pygame.mixer.Sound(
             'lib/audio/death/deleted_enemy.wav')
-        self.death_sound.set_volume(0.2)
+        self.death_sound.set_volume(0.1)
         self.attack_sound = pygame.mixer.Sound(monster_info['attack_sound'])
-        self.attack_sound.set_volume(0.2)
+        self.attack_sound.set_volume(0.1)
+        self.deleted_sound = pygame.mixer.Sound('lib/audio/death/deleted.wav')
+        self.deleted_sound.set_volume(0.1)
 
     def import_graphics(self, name):
         '''carrega os sprites do inimigo'''
@@ -131,8 +137,12 @@ class Enemy(Entity):
         if self.final_trigger:
             current_time = pygame.time.get_ticks()
             if current_time - self.final_kill >= 1000:
-                self.function()
+                self.function_final()
+        if self.deleted_player:
+            current_time = pygame.time.get_ticks()
+            if current_time - self.deleted_time >= 500:
                 self.kill()
+                self.function_gameover()
 
     def get_damage(self, player):
         '''gerencia o dano causado pelo jogador no inimigo'''
@@ -151,6 +161,25 @@ class Enemy(Entity):
             self.vulnerable = False
             self.direction = self.get_player_distance_direction(player)[1]
             self.direction *= -self.resistance
+
+    def trigger_death_particles(self, pos, particle_type):
+        '''criar as animações de morte dos inimigos'''
+        self.animation_player.create_particles(
+            particle_type, pos, self.visible_sprites)
+
+    def damage_player(self, amount, attack_type):
+        '''aplica dano ao jogador e liga a invulnerabilidade temporária'''
+        if self.player.vulnerable:
+            self.player.health -= amount
+            self.player.vulnerable = False
+            self.player.hurt_time = pygame.time.get_ticks()
+            self.animation_player.create_particles(
+                attack_type, self.player.rect.center, [self.visible_sprites])
+        if self.player.health <= 0:
+            self.deleted_sound.play()
+            self.player.kill()
+            self.deleted_time = pygame.time.get_ticks()
+            self.deleted_player = True
 
     def update(self):
         self.move(self.speed)

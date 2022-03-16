@@ -101,14 +101,14 @@ class Enemy(Entity):
         animation = self.animations[self.status]
 
         # loop over the frame index
-        self.frame_index += self.animation_speed
-        if self.frame_index >= len(animation):
+        self.set_frame_index(self.get_frame_index() + self.get_animation_speed())
+        if self.get_frame_index() >= len(animation):
             if self.status == 'attack':
                 self.can_attack = False
-            self.frame_index = 0
+            self.set_frame_index(0)
 
         # set the image
-        self.image = animation[int(self.frame_index)]
+        self.image = animation[int(self.get_frame_index())]
         self.rect = self.image.get_rect(center=self.hitbox.center)
 
         if not self.vulnerable:
@@ -125,7 +125,7 @@ class Enemy(Entity):
                 self.can_attack = True
         if not self.vulnerable:
             current_time = pygame.time.get_ticks()
-            if current_time - self.hit_time >= self.invicible_duration:
+            if current_time - self.hit_time >= self.get_invicible_duration():
                 self.vulnerable = True
         if self.final_trigger:
             current_time = pygame.time.get_ticks()

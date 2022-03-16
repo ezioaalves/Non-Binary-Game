@@ -14,9 +14,9 @@ class Enemy(Entity):
 
         # configuração grafica
         self.import_graphics(monster_name)
-        self.status = 'parado'
+        self.status = 'idle'
         self.image = pygame.image.load(
-            'graphics/enemies/bug/parado/0.png').convert_alpha()
+            'lib/graphics/enemies/bug/idle/0.png').convert_alpha()
 
         # movimento
         self.rect = self.image.get_rect(topleft=pos)
@@ -26,13 +26,13 @@ class Enemy(Entity):
         # atributos
         self.monster_name = monster_name
         monster_info = settings['monster_data'][self.monster_name]
-        self.health = monster_info['vida']
-        self.speed = monster_info['velocidade']
-        self.attack_damage = monster_info['dano']
-        self.resistance = monster_info['resistencia']
-        self.attack_radius = monster_info['raio_ataque']
-        self.notice_radius = monster_info['raio_percepcao']
-        self.attack_type = monster_info['tipo_ataque']
+        self.health = monster_info['health']
+        self.speed = monster_info['speed']
+        self.attack_damage = monster_info['damage']
+        self.resistance = monster_info['resistance']
+        self.attack_radius = monster_info['attack_radius']
+        self.notice_radius = monster_info['sight_radius']
+        self.attack_type = monster_info['attack_type']
 
         # interação com jogador
         self.can_attack = True
@@ -46,15 +46,15 @@ class Enemy(Entity):
 
         # sons
         self.death_sound = pygame.mixer.Sound(
-            'audio\death\inimigo_deletado.wav')
+            'lib/audio/death/deleted_enemy.wav')
         self.death_sound.set_volume(0.2)
-        self.attack_sound = pygame.mixer.Sound(monster_info['som_ataque'])
+        self.attack_sound = pygame.mixer.Sound(monster_info['attack_sound'])
         self.attack_sound.set_volume(0.2)
 
     def import_graphics(self, name):
         '''carrega os sprites do inimigo'''
-        self.animations = {'ataque': [], 'andando': [], 'parado': []}
-        main_path = f'graphics\enemies/{name}/'
+        self.animations = {'attack': [], 'walking': [], 'idle': []}
+        main_path = f'lib/graphics/enemies/{name}/'
         for animation in self.animations.keys():
             full_path = main_path + animation
             self.animations[animation] = import_folder(full_path)
@@ -77,21 +77,21 @@ class Enemy(Entity):
         distance = self.get_player_distance_direction(player)[0]
 
         if distance <= self.attack_radius and self.can_attack:
-            if self.status != 'ataque':
+            if self.status != 'attack':
                 self.frame_index = 0
-            self.status = 'ataque'
+            self.status = 'attack'
         elif distance <= self.notice_radius:
-            self.status = 'andando'
+            self.status = 'walking'
         else:
-            self.status = 'parado'
+            self.status = 'idle'
 
     def actions(self, player):
         '''determina as ações do inimigo'''
-        if self.status == 'ataque':
+        if self.status == 'attack':
             self.attack_time = pygame.time.get_ticks()
             self.damage_player(self.attack_damage, self.attack_type)
             self.attack_sound.play()
-        elif self.status == 'andando':
+        elif self.status == 'walking':
             self.direction = self.get_player_distance_direction(player)[1]
         else:
             self.direction = pygame.math.Vector2()
@@ -103,7 +103,7 @@ class Enemy(Entity):
         # loop over the frame index
         self.frame_index += self.animation_speed
         if self.frame_index >= len(animation):
-            if self.status == 'ataque':
+            if self.status == 'attack':
                 self.can_attack = False
             self.frame_index = 0
 
@@ -141,7 +141,7 @@ class Enemy(Entity):
                 self.trigger_death_particles(
                     self.rect.center, self.monster_name)
                 self.death_sound.play()
-                if self.monster_name == 'cliente':
+                if self.monster_name == 'client':
                     self.final_kill = pygame.time.get_ticks()
                     self.final_trigger = True
                 else:

@@ -12,16 +12,16 @@ class AnimationPlayer:
     def __init__(self):
         self.frames = {
             # inimigos
-            'erro': import_folder('graphics/animation\garra'),
-            'alteracao': import_folder('graphics/animation\magia'),
+            'error': import_folder('lib/graphics/animation/claw'),
+            'alteration': import_folder('lib/graphics/animation/alteration'),
 
             # jogador
-            'arma': import_folder('graphics/animation/arma'),
-            'apontar': import_folder('graphics/animation/apontar'),
+            'gun': import_folder('lib/graphics/animation/gun'),
+            'pointing': import_folder('lib/graphics/animation/pointing'),
 
             # morte inimigo
-            'cliente': import_folder('graphics/animation/morte_cliente'),
-            'bug': import_folder('graphics/animation/morte_bug')
+            'client': import_folder('lib/graphics/animation/death_client'),
+            'bug': import_folder('lib/graphics/animation/death_bug')
         }
 
     def create_particles(self, animation_type, pos, groups):

@@ -20,32 +20,32 @@
     },
 
     "screen_img":{
-        "title": "graphics/screen/tela_titulo.png",
-        "gameover": "graphics/screen/gameover.png",
-        "final": "graphics/screen/recompensa.png"
+        "title": "lib/graphics/screen/title.png",
+        "gameover": "lib/graphics/screen/gameover.png",
+        "final": "lib/graphics/screen/final.png"
     },
 
     "monster_data":{
         "bug": {
-            "vida": 60,
-            "dano": 20,
-            "tipo_ataque": "erro",
-            "som_ataque": "audio/attack/erro.wav",
-            "velocidade": 3,
-            "resistencia": 3,
-            "raio_ataque": 40,
-            "raio_percepcao": 360
+            "health": 60,
+            "damage": 20,
+            "attack_type": "error",
+            "attack_sound": "lib/audio/attack/error.wav",
+            "speed": 3,
+            "resistance": 3,
+            "attack_radius": 40,
+            "sight_radius": 360
         },
 
-        "cliente": {
-            "vida": 300,
-            "dano": 40,
-            "tipo_ataque": "alteracao",
-            "som_ataque":"audio/attack/cliente_ataque.wav",
-            "velocidade": 2,
-            "resistencia": 0,
-            "raio_ataque": 200,
-            "raio_percepcao": 0
+        "client": {
+            "health": 300,
+            "damage": 40,
+            "attack_type": "alteration",
+            "attack_sound":"lib/audio/attack/client_attack.wav",
+            "speed": 2,
+            "resistance": 0,
+            "attack_radius": 200,
+            "sight_radius": 0
         }
     }
 }

@@ -20,13 +20,13 @@ class Player(Entity):
     def __init__(self, pos, groups, obstacle_sprites, portal_sprites, point_sprites, attackable_sprites):
         super().__init__(groups)
         self.image = pygame.image.load(
-            'graphics/player/baixo/baixo_0.png').convert_alpha()
+            'lib/graphics/player/down/down_0.png').convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
         self.hitbox = self.rect.inflate(-15, -26)
 
         # graphics setup
         self.import_player_assets()
-        self.status = 'baixo'
+        self.status = 'down'
 
         # attacking
         self.attacking = False
@@ -36,9 +36,9 @@ class Player(Entity):
         self.visible_sprites = groups[0]
 
         # sons
-        self.hit_sound = pygame.mixer.Sound('audio/attack/acerto.wav')
+        self.hit_sound = pygame.mixer.Sound('lib/audio/attack/hit.wav')
         self.hit_sound.set_volume(0.2)
-        self.shot_sound = pygame.mixer.Sound('audio/attack/disparo.wav')
+        self.shot_sound = pygame.mixer.Sound('lib/audio/attack/shot.wav')
         self.shot_sound.set_volume(0.2)
 
         # teleporting
@@ -46,16 +46,16 @@ class Player(Entity):
         self.teleport_cooldown = 300
         self.teleport_time = None
         self.teleport_sound = pygame.mixer.Sound(
-            'audio/teleporte/teleport.wav')
+            'lib/audio/portal/portal.wav')
         self.teleport_sound.set_volume(3)
 
         # atributos
-        self.stats = {'vida': 100, 'energia': 60,
-                      'ataque': 30, 'velocidade': 6}
-        self.health = self.stats['vida']
-        self.energy = self.stats['energia']
-        self.attack = self.stats['ataque']
-        self.speed = self.stats['velocidade']
+        self.stats = {'health': 100, 'energy': 60,
+                      'attack': 30, 'speed': 6}
+        self.health = self.stats['health']
+        self.energy = self.stats['energy']
+        self.attack = self.stats['attack']
+        self.speed = self.stats['speed']
 
         # grupos de sprites
         self.point_sprites = point_sprites
@@ -73,9 +73,9 @@ class Player(Entity):
 
     def import_player_assets(self):
         '''carrega todos os sprites de todos os estados do jogador'''
-        character_path = 'graphics/player/'
-        self.animations = {'cima': [], 'baixo': [], 'esquerda': [], 'direita': [],
-                           'direita_parado': [], 'esquerda_parado': [], 'cima_parado': [], 'baixo_parado': []}
+        character_path = 'lib/graphics/player/'
+        self.animations = {'up': [], 'down': [], 'left': [], 'right': [],
+                           'right_idle': [], 'left_idle': [], 'up_idle': [], 'down_idle': []}
 
         for animation in self.animations.keys():
             full_path = character_path + animation
@@ -88,19 +88,19 @@ class Player(Entity):
             # movement input
             if keys[pygame.K_w]:
                 self.direction.y = -1
-                self.status = 'cima'
+                self.status = 'up'
             elif keys[pygame.K_s]:
                 self.direction.y = 1
-                self.status = 'baixo'
+                self.status = 'down'
             else:
                 self.direction.y = 0
 
             if keys[pygame.K_d]:
                 self.direction.x = 1
-                self.status = 'direita'
+                self.status = 'right'
             elif keys[pygame.K_a]:
                 self.direction.x = -1
-                self.status = 'esquerda'
+                self.status = 'left'
             else:
                 self.direction.x = 0
 
@@ -131,8 +131,8 @@ class Player(Entity):
 
         # parado status
         if self.direction.x == 0 and self.direction.y == 0:
-            if not 'parado' in self.status:
-                self.status = self.status + '_parado'
+            if not 'idle' in self.status:
+                self.status = self.status + '_idle'
 
     def cooldowns(self):
         '''confere a pausa entre ações'''
@@ -173,14 +173,14 @@ class Player(Entity):
 
     def recover(self):
         '''recarrega a saúde e energia do jogador'''
-        if self.energy <= self.stats['energia']:
+        if self.energy <= self.stats['energy']:
             self.energy += 0.1
         else:
-            self.energy = self.stats['energia']
-        if self.health <= self.stats['vida']:
+            self.energy = self.stats['energy']
+        if self.health <= self.stats['health']:
             self.health += 0.01
         else:
-            self.health = self.stats['vida']
+            self.health = self.stats['health']
 
     def teleport(self):
         '''verifica a área do teletransporte e se o jogador entrou nela, com as informações para acontecer o teletransporte'''
@@ -201,7 +201,7 @@ class Player(Entity):
                     self.teleporting = False
                     break
                 self.hitbox.center += centralize
-                self.status = 'baixo_parado'
+                self.status = 'down_idle'
 
     def create_attack(self):
         '''cria o sprite de disparo'''
@@ -211,11 +211,11 @@ class Player(Entity):
             self.energy -= 10
             # direção em que o tiro vai se mover
             facing = self.status.split('_')[0]
-            if facing == 'direita':
+            if facing == 'right':
                 direction = pygame.math.Vector2(1, 0)
-            elif facing == 'esquerda':
+            elif facing == 'left':
                 direction = pygame.math.Vector2(-1, 0)
-            elif facing == 'cima':
+            elif facing == 'up':
                 direction = pygame.math.Vector2(0, -1)
             else:
                 direction = pygame.math.Vector2(0, 1)
@@ -227,7 +227,7 @@ class Player(Entity):
                         settings['general_settings']['tilesize']
                     shot_x = self.rect.centerx + offset_x
                     shot_y = self.rect.centery
-                    self.animation_player.create_particles('apontar', (shot_x, shot_y), [
+                    self.animation_player.create_particles('pointing', (shot_x, shot_y), [
                                                            self.visible_sprites, self.point_sprites])
                 else:
                     offset_y = (direction.y * i) * \
@@ -235,7 +235,7 @@ class Player(Entity):
                     shot_x = self.rect.centerx
                     shot_y = self.rect.centery + offset_y
                     self.animation_player.create_particles(
-                        'apontar', (shot_x, shot_y), [self.visible_sprites, self.point_sprites])
+                        'pointing', (shot_x, shot_y), [self.visible_sprites, self.point_sprites])
                 for point_sprite in self.point_sprites:
                     hit = pygame.sprite.spritecollide(
                         point_sprite, self.obstacle_sprites, False)
@@ -245,18 +245,18 @@ class Player(Entity):
                         for target_sprite in hit:
                             position = target_sprite.rect.center
                             self.animation_player.create_particles(
-                                'arma', position, [self.visible_sprites])
+                                'gun', position, [self.visible_sprites])
                     if hit_damage:
                         for target_sprite in hit_damage:
                             target_sprite.get_damage(self)
                             position = target_sprite.rect.center
                             self.animation_player.create_particles(
-                                'arma', position, [self.visible_sprites])
+                                'gun', position, [self.visible_sprites])
                 if hit or hit_damage:
                     self.hit_sound.play()
                     break
 
-    'destrói o sprite de disparo'
+    '''destrói o sprite de disparo'''
 
     def destroy_attack(self):
         if self.current_attack:

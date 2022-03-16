@@ -37,6 +37,6 @@ class UI:
     def display(self, player):
         '''mostra a atualização das barras da UI'''
         self.show_bar(
-            player.health, player.stats['vida'], self.health_bar_rect, settings['ui_colors']['health_color'])
+            player.health, player.stats['health'], self.health_bar_rect, settings['ui_colors']['health_color'])
         self.show_bar(
-            player.energy, player.stats['energia'], self.energy_bar_rect, settings['ui_colors']['energy_color'])
+            player.energy, player.stats['energy'], self.energy_bar_rect, settings['ui_colors']['energy_color'])

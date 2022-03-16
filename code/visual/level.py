@@ -3,7 +3,6 @@ from . import AnimationPlayer
 from utils import *
 from . import Tile
 from entities import Player
-from weapon import Weapon
 from . import UI
 from entities import Enemy
 from read_json import settings
@@ -34,11 +33,11 @@ class Level:
         self.animation_player = AnimationPlayer()
 
         # sons
-        self.hit_sound = pygame.mixer.Sound('audio/attack/acerto.wav')
+        self.hit_sound = pygame.mixer.Sound('lib/audio/attack/hit.wav')
         self.hit_sound.set_volume(3)
-        self.shot_sound = pygame.mixer.Sound('audio/attack/disparo.wav')
+        self.shot_sound = pygame.mixer.Sound('lib/audio/attack/shot.wav')
         self.shot_sound.set_volume(3)
-        self.background = pygame.mixer.Sound('audio/background\level.wav')
+        self.background = pygame.mixer.Sound('lib/audio/background/level.wav')
         self.background.set_volume(0.01)
 
         # screens
@@ -49,14 +48,14 @@ class Level:
         '''desenha o gráfico'''
         layouts = {
             # limite que define onde o jogador pode ou nao ir
-            'boundary': import_csv_layout('graphics/Tileset/Mapa_Divisas.csv'),
+            'boundary': import_csv_layout('lib/data/map_grids/map_boundary.csv'),
             # define as posicoes dos objetos no mapa
-            'objects': import_csv_layout('graphics/Tileset/Mapa_Objetos.csv'),
-            'entities': import_csv_layout('graphics/Tileset/Mapa_Inimigos.csv'),
-            'portals': import_csv_layout('graphics/Tileset/Mapa_Teletransporte.csv')
+            'objects': import_csv_layout('lib/data/map_grids/map_objects.csv'),
+            'entities': import_csv_layout('lib/data/map_grids/map_entities.csv'),
+            'portals': import_csv_layout('lib/data/map_grids/map_portals.csv')
         }
         graphics = {
-            'objects': import_folder('graphics/Tileset/Objetos')
+            'objects': import_folder('lib/graphics/tileset/objects')
         }
 
         for style, layout in layouts.items():  # verificacao cada intem dentro do layouts
@@ -89,7 +88,7 @@ class Level:
                                 if col == '230':
                                     monster_name = 'bug'
                                 if col == '374':
-                                    monster_name = 'cliente'
+                                    monster_name = 'client'
                                 Enemy(monster_name, (x, y), [
                                       self.visible_sprites, self.attackable_sprites], self.obstacles_sprites, self.damage_player, self.trigger_death_particles, self.function_final)
 
@@ -141,7 +140,7 @@ class YSortCameraGroup(pygame.sprite.Group):
 
         # criando o piso
         self.floor_surf = pygame.image.load(
-            'graphics/Tileset/Mapa.png').convert()
+            'lib/graphics/tileset/map.png').convert()
         self.floor_rect = self.floor_surf.get_rect(topleft=(0, 0))
 
     def custom_draw(self, player):

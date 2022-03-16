@@ -14,7 +14,7 @@ class Game:
 
     def __init__(self):
         # configuração geral
-        icon = pygame.image.load('graphics/system/game_icon.png')
+        icon = pygame.image.load('lib/graphics/system/game_icon.png')
         pygame.display.set_caption('Non_Binary')
         pygame.display.set_icon(icon)
         pygame.init()

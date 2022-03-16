@@ -74,8 +74,6 @@ class Player(Entity):
             full_path = character_path + animation
             self.animations[animation] = import_folder(full_path)
 
-    
-
     def move(self, speed):
         '''responsável pela movimentação do jogador'''
         if self.attacking or self.teleporting:

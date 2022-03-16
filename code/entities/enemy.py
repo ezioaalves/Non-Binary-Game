@@ -136,12 +136,12 @@ class Enemy(Entity):
                 self.vulnerable = True
         if self.final_trigger:
             current_time = pygame.time.get_ticks()
-            if current_time - self.final_kill >= 5000:
+            if current_time - self.final_kill >= 1000:
                 self.function_final()
-                self.kill()
         if self.deleted_player:
             current_time = pygame.time.get_ticks()
             if current_time - self.deleted_time >= 500:
+                self.kill()
                 self.function_gameover()
 
     def get_damage(self, player):

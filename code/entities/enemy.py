@@ -1,12 +1,12 @@
-from ast import Pass
 import pygame
 from .entity import Entity
 from utils import *
 from read_json import settings
+from visual import AnimationPlayer
 
 
 class Enemy(Entity):
-    def __init__(self, monster_name, pos, groups, obstacle_sprites, damage_player, trigger_death_particles, function):
+    def __init__(self, monster_name, pos, groups, obstacle_sprites, player, function_final, function_gameover):
 
         # configuração geral
         super().__init__(groups)
@@ -17,6 +17,7 @@ class Enemy(Entity):
         self.status = 'idle'
         self.image = pygame.image.load(
             'lib/graphics/enemies/bug/idle/0.png').convert_alpha()
+        self.animation_player = AnimationPlayer()
 
         # movimento
         self.rect = self.image.get_rect(topleft=pos)
@@ -38,9 +39,9 @@ class Enemy(Entity):
         self.can_attack = True
         self.attack_time = None
         self.attack_cooldown = 800
-        self.damage_player = damage_player
-        self.trigger_death_particles = trigger_death_particles
-        self.function = function
+        self.player = player
+        self.function_final = function_final
+        self.function_gameover = function_gameover()
         self.final_kill = None
         self.final_trigger = False
 
@@ -151,6 +152,23 @@ class Enemy(Entity):
             self.vulnerable = False
             self.direction = self.get_player_distance_direction(player)[1]
             self.direction *= -self.resistance
+
+    def trigger_death_particles(self, pos, particle_type):
+        '''criar as animações de morte dos inimigos'''
+        self.animation_player.create_particles(
+            particle_type, pos, self.visible_sprites)
+
+    def damage_player(self, amount, attack_type):
+        '''aplica dano ao jogador e liga a invulnerabilidade temporária'''
+        if self.player.vulnerable:
+            self.player.health -= amount
+            self.player.vulnerable = False
+            self.player.hurt_time = pygame.time.get_ticks()
+            self.animation_player.create_particles(
+                attack_type, self.player.rect.center, [self.visible_sprites])
+        if self.player.health <= 0:
+            self.player.kill()
+            self.function_gameover()
 
     def update(self):
         self.move(self.speed)

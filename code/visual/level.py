@@ -45,6 +45,11 @@ class Level:
         self.call_gameover = call_gameover
         self.call_final = call_final
 
+        # player
+        self.player = Player((0, 0), [self.visible_sprites], self.obstacles_sprites,
+                             self.portals_sprites, self.point_sprites, self.attackable_sprites)
+        print(self.player.health)
+
     def create_map(self):  # criando o dicionario
         '''desenha o gráfico'''
         layouts = {
@@ -83,15 +88,16 @@ class Level:
                         if style == 'entities':
                             if col == '266':
                                 # define o jogador e sua position inicial
-                                self.player = Player((x, y), [
-                                                     self.visible_sprites], self.obstacles_sprites, self.portals_sprites, self.point_sprites, self.attackable_sprites)
+                                #self.player.hitbox.center = (x, y)
+                                pass
                             else:
                                 if col == '230':
                                     monster_name = 'bug'
                                 if col == '374':
                                     monster_name = 'client'
-                                Enemy(monster_name, (x, y), [
-                                      self.visible_sprites, self.attackable_sprites], self.obstacles_sprites, self.damage_player, self.trigger_death_particles, self.function_final)
+                                #player = self.player
+                                # Enemy(monster_name, (x, y), [
+                                #     self.visible_sprites, self.attackable_sprites], self.obstacles_sprites, player, self.function_final, self.function_gameover)
 
     def function_final(self):
         self.background.stop()
@@ -100,25 +106,6 @@ class Level:
     def function_gameover(self):
         self.background.stop()
         self.call_gameover()
-
-    def damage_player(self, amount, attack_type):
-        '''aplica dano ao jogador e liga a invulnerabilidade temporária'''
-        if self.player.vulnerable:
-            self.player.health -= amount
-            self.player.vulnerable = False
-            self.player.hurt_time = pygame.time.get_ticks()
-            self.animation_player.create_particles(
-                attack_type, self.player.rect.center, [self.visible_sprites])
-        if self.player.health <= 0:
-            self.player.kill()
-            self.background.stop()
-            self.function_gameover()
-
-    # dentro de inimigo
-    def trigger_death_particles(self, pos, particle_type):
-        '''criar as animações de morte dos inimigos'''
-        self.animation_player.create_particles(
-            particle_type, pos, self.visible_sprites)
 
     def run(self):
         # atualiza e desenha o jogo

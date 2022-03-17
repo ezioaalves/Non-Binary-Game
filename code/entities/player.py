@@ -16,16 +16,11 @@ class Player(Entity):
         animação do jogador e configurações da arma
     """
 
-    def __init__(self, pos, groups, obstacle_sprites, portal_sprites, point_sprites, attackable_sprites):
-        super().__init__(groups)
-        self.image = pygame.image.load(
-            'lib/graphics/player/down/down_0.png').convert_alpha()
-        self.rect = self.image.get_rect(topleft=pos)
-        self.hitbox = self.rect.inflate(-15, -26)
+    def __init__(self, pos, groups, obstacle_sprites, portal_sprites, point_sprites, attackable_sprites, default_image_path, status, hitbox_inflation):
+        super().__init__(groups, default_image_path, pos, status, hitbox_inflation)
 
         # graphics setup
         self.import_player_assets()
-        self.status = 'down'
 
         # attacking
         self.attacking = False

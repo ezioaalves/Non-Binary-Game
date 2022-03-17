@@ -25,7 +25,7 @@ class Level:
 
         # player
         self.player = Player((0, 0), [self.visible_sprites], self.obstacles_sprites,
-                             self.portals_sprites, self.point_sprites, self.attackable_sprites)
+                             self.portals_sprites, self.point_sprites, self.attackable_sprites, 'lib/graphics/player/down/down_0.png', 'down', (-15, -26))
 
         # screens
         self.call_gameover = call_gameover
@@ -87,7 +87,7 @@ class Level:
                                 else:
                                     monster_name = 'bug'
                                 Enemy(monster_name, (x, y), [
-                                    self.visible_sprites, self.attackable_sprites], self.obstacles_sprites, self.function_final, self.function_gameover)
+                                    self.visible_sprites, self.attackable_sprites], self.obstacles_sprites, self.function_final, self.function_gameover, 'lib/graphics/enemies/bug/idle/0.png', 'idle', (0, -10))
 
     def function_final(self):
         self.background.stop()

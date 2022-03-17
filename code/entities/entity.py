@@ -4,8 +4,15 @@ from math import sin
 
 
 class Entity(pygame.sprite.Sprite, abc.ABC):
-    def __init__(self, groups):
+    def __init__(self, groups, default_image_path, pos, status, hitbox_inflation):
         super().__init__(groups)
+
+        self.image = pygame.image.load(default_image_path).convert_alpha()
+        self.rect = self.image.get_rect(topleft=pos)
+        self.hitbox = self.rect.inflate(
+            hitbox_inflation[0], hitbox_inflation[1])
+        self.status = status
+
         self.__frame_index = 0
         self.__animation_speed = 0.06
         self.direction = pygame.math.Vector2()

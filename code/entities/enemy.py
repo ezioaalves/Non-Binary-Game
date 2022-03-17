@@ -6,23 +6,18 @@ from visual import GetParticle
 
 
 class Enemy(Entity):
-    def __init__(self, monster_name, pos, groups, obstacle_sprites, function_final, function_gameover):
+    def __init__(self, monster_name, pos, groups, obstacle_sprites, function_final, function_gameover, default_image_path, status, hitbox_inflation):
 
         # configuração geral
-        super().__init__(groups)
+        super().__init__(groups, default_image_path, pos, status, hitbox_inflation)
         self.sprite_type = 'enemy'
 
         # configuração grafica
         self.import_graphics(monster_name)
-        self.status = 'idle'
-        self.image = pygame.image.load(
-            'lib/graphics/enemies/bug/idle/0.png').convert_alpha()
         self.animation_player = GetParticle()
         self.visible_sprites = groups[0]
 
         # movimento
-        self.rect = self.image.get_rect(topleft=pos)
-        self.hitbox = self.rect.inflate(0, -10)
         self.obstacle_sprites = obstacle_sprites
 
         # atributos

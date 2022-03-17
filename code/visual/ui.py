@@ -4,7 +4,8 @@ from read_json import settings
 
 class UI:
     '''
-        classe responsável pela interface do usuário (barra que mostra saúde que o jogador tem e a energia da arma dele)
+        Classe responsável pela interface do usuário (barra que mostra saúde que o jogador tem
+        e a energia da arma dele)
     '''
 
     def __init__(self):
@@ -19,7 +20,13 @@ class UI:
             10, 34, settings['ui']['energy_bar_width'], settings['ui']['bar_height'])
 
     def show_bar(self, current, max_amount, bg_rect, color):
-        '''cria a barra da UI'''
+        ''' Cria a barra da UI
+        :param current: int.
+        :param max_amount: int.
+        :param bg_rect: rect.
+        :param color: string.
+        '''
+
         # desenha o fundo
         pygame.draw.rect(self.display_surface,
                          settings['ui_colors']['bg_color'], bg_rect)
@@ -36,7 +43,9 @@ class UI:
                          settings['ui_colors']['border_color'], bg_rect, 3)
 
     def display(self, player):
-        '''mostra a atualização das barras da UI'''
+        '''mostra a atualização das barras da UI
+        :param player: Player.
+        '''
         self.show_bar(
             player.health, player.stats['health'], self.health_bar_rect, settings['ui_colors']['health_color'])
         self.show_bar(

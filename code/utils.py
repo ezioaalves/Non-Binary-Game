@@ -31,6 +31,9 @@ def import_folder(path):
 
 
 def input(player):
+    '''
+        verificação das teclas e as funções que devem ser executadas ao preciona-las 
+    '''
     if not player.attacking and not player.teleporting:
         keys = pygame.key.get_pressed()
 

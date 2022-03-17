@@ -4,6 +4,10 @@ from math import sin
 
 
 class Entity(pygame.sprite.Sprite, abc.ABC):
+    '''
+        Classe genérica para as entidades player e enemy
+    '''
+
     def __init__(self, groups, default_image_path, pos, status, hitbox_inflation):
         super().__init__(groups)
 
@@ -39,7 +43,10 @@ class Entity(pygame.sprite.Sprite, abc.ABC):
         return self.__invicible_duration
 
     def move(self, speed):
-        '''define a movimentação'''
+        ''' 
+        Define a movimentação da entidade. 
+        :param speed: int.
+        '''
 
         if self.direction.magnitude() != 0:
             self.direction = self.direction.normalize()
@@ -51,7 +58,11 @@ class Entity(pygame.sprite.Sprite, abc.ABC):
         self.rect.center = self.hitbox.center
 
     def collision(self, direction):
-        '''recebe a direção na qual a entidade está se movendo e verifica as colisões nessa direção'''
+        ''' 
+        Recebe a direção na qual a entidade está se movendo e verifica as colisões nessa direção.
+        :param direction: string.
+        '''
+
         if direction == 'horizontal':
             for sprite in self.obstacle_sprites:
                 if sprite.hitbox.colliderect(self.hitbox):
@@ -70,14 +81,20 @@ class Entity(pygame.sprite.Sprite, abc.ABC):
 
     @abc.abstractmethod
     def animate(self):
+        '''Exige que seus implementem uma função de animação'''
         pass
 
     @abc.abstractmethod
     def cooldowns(self):
+        '''Exige que seus implementem uma função de pausa entre ações'''
         pass
 
     def wave_value(self):
-        '''efeito de piscar no jogador'''
+        ''' 
+        Efeito de piscar no jogador.
+        Retorna int.
+        '''
+
         value = sin(pygame.time.get_ticks())
         if value >= 0:
             return 255

@@ -1,14 +1,15 @@
 import pygame
 
 
-"""
-    class responsável pela movimentação do jogador atravez das teclas W A S D,
-    com as  informações das direções, velocidade.
-"""
-
-
 class Weapon(pygame.sprite.Sprite):
-    def __init__(self, player, groups) -> None:
+    ''' Classe responsável por armazenar a direção em que o player está se movendo
+
+    armazenar a imagem da arma 
+
+    criar a arma.
+    '''
+
+    def __init__(self, player, groups):
         super().__init__(groups)
         direction = player.status.split('_')[0]
 
@@ -37,7 +38,9 @@ class Weapon(pygame.sprite.Sprite):
                 midbottom=player.rect.midtop+pygame.math.Vector2(0, 0))
 
     def shot_play(self):
+        ''' Ativa o som do tiro saindo da arma. '''
         self.shot_sound.play()
 
     def hit_play(self):
+        ''' Ativa o som do tiro acertando algum sprite. '''
         self.hit_sound.play()

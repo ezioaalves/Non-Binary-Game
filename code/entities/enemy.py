@@ -6,6 +6,8 @@ from visual import GetParticle
 
 
 class Enemy(Entity):
+    ''' Classe responsável pela criação do inimigo e suas ações. '''
+
     def __init__(self, monster_name, pos, groups, obstacle_sprites, function_final, function_gameover, default_image_path, status, hitbox_inflation):
 
         # configuração geral
@@ -52,7 +54,10 @@ class Enemy(Entity):
         self.deleted_sound.set_volume(0.1)
 
     def import_graphics(self, name):
-        '''carrega os sprites do inimigo'''
+        ''' 
+        Carrega os sprites do inimigo.
+        :param name: string.
+        '''
         self.animations = {'attack': [], 'walking': [], 'idle': []}
         main_path = f'lib/graphics/enemies/{name}/'
         for animation in self.animations.keys():
@@ -60,7 +65,10 @@ class Enemy(Entity):
             self.animations[animation] = import_folder(full_path)
 
     def get_player_distance_direction(self, player):
-        '''pega a direção em que o inimigo irá se mover'''
+        ''' 
+        Pega a direção em que o inimigo irá se mover.
+        :param player: Player.
+        '''
         enemy_vec = pygame.math.Vector2(self.rect.center)
         player_vec = pygame.math.Vector2(player.rect.center)
         distance = (player_vec-enemy_vec).magnitude()
@@ -73,7 +81,10 @@ class Enemy(Entity):
         return (distance, direction)
 
     def get_status(self, player):
-        '''pega o status em que o inimigo está'''
+        '''
+        Pega o status em que o inimigo está.
+        :param player: Player
+        '''
         distance = self.get_player_distance_direction(player)[0]
 
         if distance <= self.attack_radius and self.can_attack:
@@ -86,7 +97,10 @@ class Enemy(Entity):
             self.status = 'idle'
 
     def actions(self, player):
-        '''determina as ações do inimigo'''
+        ''' 
+        Determina as ações do inimigo.
+        :param player: Player.
+        '''
         if self.status == 'attack':
             self.attack_time = pygame.time.get_ticks()
             self.damage_player(self.attack_damage, self.attack_type, player)
@@ -97,7 +111,7 @@ class Enemy(Entity):
             self.direction = pygame.math.Vector2()
 
     def animate(self):
-        '''cria a animação do inimigo'''
+        ''' Cria a animação do inimigo.'''
         animation = self.animations[self.status]
 
         # loop over the frame index
@@ -119,7 +133,7 @@ class Enemy(Entity):
             self.image.set_alpha(255)
 
     def cooldowns(self):
-        '''tempo de espera entre cada ação do inimigo'''
+        ''' Tempo de espera entre cada ação do inimigo. '''
         if not self.can_attack:
             current_time = pygame.time.get_ticks()
             if current_time - self.attack_time >= self.attack_cooldown:
@@ -139,7 +153,10 @@ class Enemy(Entity):
                 self.function_gameover()
 
     def get_damage(self, player):
-        '''gerencia o dano causado pelo jogador no inimigo'''
+        ''' 
+        Gerencia o dano causado pelo jogador no inimigo.
+        :param player: Player.
+        '''
         if self.vulnerable:
             self.health -= player.attack
             if self.health <= 0:
@@ -157,12 +174,20 @@ class Enemy(Entity):
             self.direction *= -self.resistance
 
     def trigger_death_particles(self, pos, particle_type):
-        '''criar as animações de morte dos inimigos'''
+        '''
+        Criar as animações de morte dos inimigos.
+        :param pos: (int, int).
+        :param particle_type: string.
+        '''
         self.animation_player.create_particles(
             particle_type, pos, self.visible_sprites)
 
     def damage_player(self, amount, attack_type, player):
-        '''aplica dano ao jogador e liga a invulnerabilidade temporária'''
+        ''' 
+        Aplica dano ao jogador e liga a invulnerabilidade temporária.
+        :param amount: int.
+        :param attack_type: string.
+        '''
         if player.vulnerable:
             player.health -= amount
             player.vulnerable = False
@@ -176,10 +201,12 @@ class Enemy(Entity):
             self.deleted_player = True
 
     def update(self):
+        ''' Atualiza os sprites de inimigo.'''
         self.move(self.speed)
         self.animate()
         self.cooldowns()
 
     def enemy_update(self, player):
+        '''Atualiza os parametros de inimigo que depende do jogador'''
         self.get_status(player)
         self.actions(player)

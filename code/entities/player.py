@@ -7,14 +7,14 @@ from visual import GetParticle
 
 
 class Player(Entity):
-    """
+    '''
         nesta class contém as sprites(parte responsavel pelas imagens de movimentação do jogador) e suas informações.
         configurações das movimentações do jogador com suas direções.
         teletransporte do jogador com suas configurações.
         status do jogador, se está em movimentação ou parado.
         configurações dos ataques.
         animação do jogador e configurações da arma
-    """
+    '''
 
     def __init__(self, pos, groups, obstacle_sprites, portal_sprites, point_sprites, attackable_sprites, default_image_path, status, hitbox_inflation):
         super().__init__(groups, default_image_path, pos, status, hitbox_inflation)
@@ -217,14 +217,14 @@ class Player(Entity):
                     self.current_attack.hit_play()
                     break
 
-    '''destrói o sprite de disparo'''
-
     def destroy_attack(self):
+        '''destrói o sprite de disparo ao fim do ataque'''
         if self.current_attack:
             self.current_attack.kill()
         self.current_attack = None
 
     def update(self):
+        '''Atualiza os graficos e funções do jogador'''
         input(self)
         self.get_status()
         self.animate()

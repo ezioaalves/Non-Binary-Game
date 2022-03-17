@@ -9,6 +9,10 @@ from read_json import settings
 
 
 class Level:
+    '''
+        Classe responsavel por todas 
+    '''
+
     def __init__(self, call_gameover, call_final):
 
         # busca a surface à ser mostrada
@@ -42,8 +46,10 @@ class Level:
         # Interface de Usuario
         self.ui = UI()
 
-    def create_map(self):  # criando o dicionario
-        '''desenha o gráfico'''
+    def create_map(self):
+        ''' 
+        Lê os arquivos do tipo csv com o layout do mapa, e dependendo dos valores nele cria os tiles e os sprites nas posições designadas
+        '''
         layouts = {
             # limite que define onde o jogador pode ou nao ir
             'boundary': import_csv_layout('lib/data/map_grids/map_boundary.csv'),
@@ -90,15 +96,17 @@ class Level:
                                     self.visible_sprites, self.attackable_sprites], self.obstacles_sprites, self.function_final, self.function_gameover, 'lib/graphics/enemies/bug/idle/0.png', 'idle', (0, -10))
 
     def function_final(self):
+        ''' Chama a função de tela final.'''
         self.background.stop()
         self.call_final()
 
     def function_gameover(self):
+        ''' Chama a função tela de gameover'''
         self.background.stop()
         self.call_gameover()
 
     def run(self):
-        # atualiza e desenha o jogo
+        ''' Atualiza e desenha o jogo. '''
         self.visible_sprites.custom_draw(self.player)
         self.visible_sprites.update()
         self.visible_sprites.enemy_update(self.player)

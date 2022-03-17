@@ -7,9 +7,11 @@ from visual import Screen
 
 class Game:
     '''
-    classe que é responsavel pela execução do jogo,
-    pelas configurações gerais, pela criação da superficie de exibição e pela 
-    verificação do arquivo princiapal.
+    classe que é responsavel pela execução do jogo.
+
+    Configurações gerais.
+
+    Criação da superficie de exibição e pela verificação do arquivo princiapal.
     '''
 
     def __init__(self):
@@ -38,19 +40,19 @@ class Game:
             self.clock.tick(settings["general_settings"]["fps"])
 
     def call_title(self):
-        '''método que troca o objeto que reprouz a tela para um objeto title_screen'''
+        ''' Método que troca o objeto que reprouz a tela para um objeto title_screen.'''
         self.playing = Screen("title", self.call_level)
 
     def call_level(self):
-        '''método que troca o objeto que reprouz a tela para um objeto level'''
+        ''' Método que troca o objeto que reprouz a tela para um objeto level.'''
         self.playing = Level(self.call_gameover, self.call_final)
 
     def call_gameover(self):
-        '''método que troca o objeto que reprouz a tela para um objeto gameover'''
+        ''' Método que troca o objeto que reprouz a tela para um objeto gameover.'''
         self.playing = Screen("gameover", self.call_title)
 
     def call_final(self):
-        '''método que troca o objeto que reprouz a tela para um objeto final_screen'''
+        ''' Método que troca o objeto que reprouz a tela para um objeto final_screen.'''
         self.playing = Screen("final", self.call_title)
 
 

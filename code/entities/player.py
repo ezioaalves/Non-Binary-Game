@@ -8,19 +8,24 @@ from visual import GetParticle
 
 class Player(Entity):
     '''
-        nesta class contém as sprites(parte responsavel pelas imagens de movimentação do jogador) e suas informações.
-        configurações das movimentações do jogador com suas direções.
-        teletransporte do jogador com suas configurações.
-        status do jogador, se está em movimentação ou parado.
-        configurações dos ataques.
-        animação do jogador e configurações da arma
+        Classe que contém os sprites(parte responsavel pelas imagens de movimentação do jogador) e suas informações.
+
+        Configurações das movimentações do jogador com suas direções.
+
+        Teletransporte do jogador com suas configurações.
+
+        Status do jogador, se está em movimentação ou parado.
+
+        Configurações dos ataques.
+
+        Animação do jogador e configurações da arma
     '''
 
     def __init__(self, pos, groups, obstacle_sprites, portal_sprites, point_sprites, attackable_sprites, default_image_path, status, hitbox_inflation):
         super().__init__(groups, default_image_path, pos, status, hitbox_inflation)
 
         # graphics setup
-        self.import_player_assets()
+        self.__import_player_assets()
 
         # attacking
         self.attacking = False
@@ -58,8 +63,8 @@ class Player(Entity):
         # particulas
         self.animation_player = GetParticle()
 
-    def import_player_assets(self):
-        '''carrega todos os sprites de todos os estados do jogador'''
+    def __import_player_assets(self):
+        ''' Carrega todos os sprites de todos os estados do jogador. '''
         character_path = 'lib/graphics/player/'
         self.animations = {'up': [], 'down': [], 'left': [], 'right': [],
                            'right_idle': [], 'left_idle': [], 'up_idle': [], 'down_idle': []}
@@ -68,8 +73,10 @@ class Player(Entity):
             full_path = character_path + animation
             self.animations[animation] = import_folder(full_path)
 
-    def move(self, speed):
-        '''responsável pela movimentação do jogador'''
+    def __move(self, speed):
+        '''Responsável pela movimentação do jogador.
+        :param speed: int.
+        '''
         if self.attacking or self.teleporting:
             self.direction.x = 0
             self.direction.y = 0
@@ -84,8 +91,8 @@ class Player(Entity):
         self.rect.center = self.hitbox.center
         self.teleport()
 
-    def get_status(self):
-        '''verifica os status do jogador e a posição em que ele parou'''
+    def __get_status(self):
+        ''' Verifica os status do jogador e a posição em que ele parou.'''
 
         # parado status
         if self.direction.x == 0 and self.direction.y == 0:
@@ -93,13 +100,13 @@ class Player(Entity):
                 self.status = self.status + '_idle'
 
     def cooldowns(self):
-        '''confere a pausa entre ações'''
+        ''' Confere a pausa entre ações. '''
         current_time = pygame.time.get_ticks()
 
         if self.attacking:
             if current_time - self.attack_time >= self.attack_cooldown:
                 self.attacking = False
-                self.destroy_attack()
+                self.__destroy_attack()
 
         if not self.vulnerable:
             if current_time - self.hurt_time >= self.invicible_duration:
@@ -110,7 +117,7 @@ class Player(Entity):
                 self.teleporting = False
 
     def animate(self):
-        '''animação do sprite do jogador'''
+        ''' Animação do sprite do jogador. '''
         animation = self.animations[self.status]
 
         # loop over the frame index
@@ -130,8 +137,8 @@ class Player(Entity):
         else:
             self.image.set_alpha(255)
 
-    def recover(self):
-        '''recarrega a saúde e energia do jogador'''
+    def __recover(self):
+        ''' Recarrega a saúde e energia do jogador.'''
         if self.energy <= self.stats['energy']:
             self.energy += 0.1
         else:
@@ -142,7 +149,7 @@ class Player(Entity):
             self.health = self.stats['health']
 
     def teleport(self):
-        '''verifica a área do teletransporte e se o jogador entrou nela, com as informações para acontecer o teletransporte'''
+        ''' Verifica a área do teletransporte e se o jogador entrou nela, com as informações para acontecer o teletransporte. '''
         for sprite in self.portal_sprites:
             centralize = pygame.math.Vector2(24, 24)
             if sprite.hitbox.colliderect(self.hitbox):
@@ -164,7 +171,7 @@ class Player(Entity):
                 self.status = 'down_idle'
 
     def create_attack(self):
-        '''cria o sprite de disparo'''
+        ''' Cria o sprite de disparo.'''
         if self.energy >= 10:
             self.current_attack = Weapon(self, [self.visible_sprites])
             self.current_attack.shot_play()
@@ -217,17 +224,17 @@ class Player(Entity):
                     self.current_attack.hit_play()
                     break
 
-    def destroy_attack(self):
-        '''destrói o sprite de disparo ao fim do ataque'''
+    def __destroy_attack(self):
+        ''' Destrói o sprite de disparo ao fim do ataque. '''
         if self.current_attack:
             self.current_attack.kill()
         self.current_attack = None
 
     def update(self):
-        '''Atualiza os graficos e funções do jogador'''
+        '''Atualiza os graficos e funções do jogador.'''
         input(self)
-        self.get_status()
+        self.__get_status()
         self.animate()
         self.cooldowns()
-        self.move(self.speed)
-        self.recover()
+        self.__move(self.speed)
+        self.__recover()

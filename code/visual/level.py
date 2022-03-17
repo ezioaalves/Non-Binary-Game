@@ -10,7 +10,8 @@ from read_json import settings
 
 class Level:
     '''
-        Classe responsavel por todas 
+        Classe responsavel por todas os sprites que serão exibidos na tela, assim como a gerencia do mesmo e 
+        reprodução da música de fundo do nível.
     '''
 
     def __init__(self, call_gameover, call_final):
@@ -41,14 +42,14 @@ class Level:
         pygame.mixer.Channel(1).play(self.background, loops=-1)
 
         # criação do mapa
-        self.create_map()
+        self.__create_map()
 
         # Interface de Usuario
         self.ui = UI()
 
-    def create_map(self):
+    def __create_map(self):
         ''' 
-        Lê os arquivos do tipo csv com o layout do mapa, e dependendo dos valores nele cria os tiles e os sprites nas posições designadas
+        Lê os arquivos do tipo csv com o layout do mapa, e dependendo dos valores nele cria os tiles e os sprites nas posições designadas.
         '''
         layouts = {
             # limite que define onde o jogador pode ou nao ir

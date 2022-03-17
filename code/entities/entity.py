@@ -81,12 +81,12 @@ class Entity(pygame.sprite.Sprite, abc.ABC):
 
     @abc.abstractmethod
     def animate(self):
-        '''Exige que seus implementem uma função de animação'''
+        '''Exige que as classes filhas implementem uma função de animação'''
         pass
 
     @abc.abstractmethod
     def cooldowns(self):
-        '''Exige que seus implementem uma função de pausa entre ações'''
+        '''Exige que as classes filhas implementem uma função de pausa entre ações'''
         pass
 
     def wave_value(self):

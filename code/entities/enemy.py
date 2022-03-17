@@ -15,7 +15,7 @@ class Enemy(Entity):
         self.sprite_type = 'enemy'
 
         # configuração grafica
-        self.import_graphics(monster_name)
+        self.__import_graphics(monster_name)
         self.animation_player = GetParticle()
         self.visible_sprites = groups[0]
 
@@ -53,7 +53,7 @@ class Enemy(Entity):
         self.deleted_sound = pygame.mixer.Sound('lib/audio/death/deleted.wav')
         self.deleted_sound.set_volume(0.1)
 
-    def import_graphics(self, name):
+    def __import_graphics(self, name):
         ''' 
         Carrega os sprites do inimigo.
         :param name: string.
@@ -64,7 +64,7 @@ class Enemy(Entity):
             full_path = main_path + animation
             self.animations[animation] = import_folder(full_path)
 
-    def get_player_distance_direction(self, player):
+    def __get_player_distance_direction(self, player):
         ''' 
         Pega a direção em que o inimigo irá se mover.
         :param player: Player.
@@ -80,12 +80,12 @@ class Enemy(Entity):
 
         return (distance, direction)
 
-    def get_status(self, player):
+    def __get_status(self, player):
         '''
         Pega o status em que o inimigo está.
         :param player: Player
         '''
-        distance = self.get_player_distance_direction(player)[0]
+        distance = self.__get_player_distance_direction(player)[0]
 
         if distance <= self.attack_radius and self.can_attack:
             if self.status != 'attack':
@@ -96,17 +96,17 @@ class Enemy(Entity):
         else:
             self.status = 'idle'
 
-    def actions(self, player):
+    def __actions(self, player):
         ''' 
         Determina as ações do inimigo.
         :param player: Player.
         '''
         if self.status == 'attack':
             self.attack_time = pygame.time.get_ticks()
-            self.damage_player(self.attack_damage, self.attack_type, player)
+            self.__damage_player(self.attack_damage, self.attack_type, player)
             self.attack_sound.play()
         elif self.status == 'walking':
-            self.direction = self.get_player_distance_direction(player)[1]
+            self.direction = self.__get_player_distance_direction(player)[1]
         else:
             self.direction = pygame.math.Vector2()
 
@@ -160,7 +160,7 @@ class Enemy(Entity):
         if self.vulnerable:
             self.health -= player.attack
             if self.health <= 0:
-                self.trigger_death_particles(
+                self.__trigger_death_particles(
                     self.rect.center, self.monster_name)
                 self.death_sound.play()
                 if self.monster_name == 'client':
@@ -170,10 +170,10 @@ class Enemy(Entity):
                     self.kill()
             self.hit_time = pygame.time.get_ticks()
             self.vulnerable = False
-            self.direction = self.get_player_distance_direction(player)[1]
+            self.direction = self.__get_player_distance_direction(player)[1]
             self.direction *= -self.resistance
 
-    def trigger_death_particles(self, pos, particle_type):
+    def __trigger_death_particles(self, pos, particle_type):
         '''
         Criar as animações de morte dos inimigos.
         :param pos: (int, int).
@@ -182,7 +182,7 @@ class Enemy(Entity):
         self.animation_player.create_particles(
             particle_type, pos, self.visible_sprites)
 
-    def damage_player(self, amount, attack_type, player):
+    def __damage_player(self, amount, attack_type, player):
         ''' 
         Aplica dano ao jogador e liga a invulnerabilidade temporária.
         :param amount: int.
@@ -208,5 +208,5 @@ class Enemy(Entity):
 
     def enemy_update(self, player):
         '''Atualiza os parametros de inimigo que depende do jogador'''
-        self.get_status(player)
-        self.actions(player)
+        self.__get_status(player)
+        self.__actions(player)

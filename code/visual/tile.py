@@ -3,9 +3,7 @@ from read_json import settings
 
 
 class Tile(pygame.sprite.Sprite):
-    '''
-        classe responsavel pela criação dos desenhos e barreiras no mapa 
-    '''
+    ''' Classe responsável pela criação dos desenhos e barreiras no mapa. '''
 
     def __init__(self, pos, groups, sprite_type, surface=pygame.Surface((settings['general_settings']['tilesize'], settings['general_settings']['tilesize']))):
         super().__init__(groups)

@@ -19,7 +19,7 @@ class UI:
         self.energy_bar_rect = pygame.Rect(
             10, 34, settings['ui']['energy_bar_width'], settings['ui']['bar_height'])
 
-    def show_bar(self, current, max_amount, bg_rect, color):
+    def __show_bar(self, current, max_amount, bg_rect, color):
         ''' Cria a barra da UI
         :param current: int.
         :param max_amount: int.
@@ -46,7 +46,7 @@ class UI:
         '''mostra a atualização das barras da UI
         :param player: Player.
         '''
-        self.show_bar(
+        self.__show_bar(
             player.health, player.stats['health'], self.health_bar_rect, settings['ui_colors']['health_color'])
-        self.show_bar(
+        self.__show_bar(
             player.energy, player.stats['energy'], self.energy_bar_rect, settings['ui_colors']['energy_color'])

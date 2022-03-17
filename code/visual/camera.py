@@ -2,7 +2,7 @@ import pygame
 
 
 class YSortCameraGroup(pygame.sprite.Group):
-    ''' Classe responsável por criar a câmera que seguira os movimentos do jogador. '''
+    ''' Classe responsável por criar a câmera que seguirá os movimentos do jogador. '''
 
     def __init__(self):
         # configuração geral
@@ -21,7 +21,7 @@ class YSortCameraGroup(pygame.sprite.Group):
     def custom_draw(self, player):
         ''' Faz com que as sprites sejam desenhadas com um "desvio" para o centro da tela,
         baseado na posição do player.
-
+        :param player: Player.
         '''
 
         # buscando o offset para centralizar a camera no centro do jogador
@@ -40,7 +40,7 @@ class YSortCameraGroup(pygame.sprite.Group):
     def enemy_update(self, player):
         '''Procura por todos os sprites de inimigos dentro desse grupo
         e os atualiza
-
+        :param player: Player.
         '''
         enemy_sprites = [sprite for sprite in self.sprites() if hasattr(
             sprite, 'sprite_type') and sprite.sprite_type == 'enemy']

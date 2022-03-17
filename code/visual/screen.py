@@ -19,14 +19,14 @@ class Screen:
         self.call_trigger = False
         self.start_time = pygame.time.get_ticks()
 
-    def input(self):
+    def __input(self):
         ''' Verificação se a barra de espaço foi acionado para iniciar o jogo. '''
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE] and self.screen_type == 'title':
             self.call_time = pygame.time.get_ticks()
             self.call_trigger = True
 
-    def cooldown(self):
+    def __cooldown(self):
         ''' Dá um tempo entre o gatilho da troca de telas para que não ocorrra de forma instantanêa. '''
         if self.call_trigger:
             current_time = pygame.time.get_ticks()
@@ -43,5 +43,5 @@ class Screen:
         ''' Passa todas as funções que devem ser executadas para o loop do Game'''
         self.display_surface.blit(self.img_surface, (0, 0))
         self.background_sound.play(loops=-1, fade_ms=1)
-        self.input()
-        self.cooldown()
+        self.__input()
+        self.__cooldown()

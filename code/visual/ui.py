@@ -6,6 +6,7 @@ class UI:
     '''
         classe responsável pela interface do usuário (barra que mostra saúde que o jogador tem e a energia da arma dele)
     '''
+
     def __init__(self):
 
         # general

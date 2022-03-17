@@ -8,7 +8,7 @@ from utils import import_folder
 """
 
 
-class AnimationPlayer:
+class GetParticle:
     def __init__(self):
         self.frames = {
             # inimigos

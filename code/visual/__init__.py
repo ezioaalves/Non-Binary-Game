@@ -1,4 +1,4 @@
-from .animation_player import AnimationPlayer
+from .get_particle import GetParticle
 from .tile import Tile
 from .ui import UI
 from .screen import Screen

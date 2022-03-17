@@ -1,5 +1,4 @@
 import pygame
-from .import AnimationPlayer
 from .import YSortCameraGroup
 from .import Tile
 from .import UI
@@ -47,9 +46,6 @@ class Level:
         # Interface de Usuario
         self.ui = UI()
 
-        # particulas
-        self.animation_player = AnimationPlayer()
-
     def create_map(self):  # criando o dicionario
         '''desenha o gráfico'''
         layouts = {
@@ -96,7 +92,7 @@ class Level:
                                 if col == '374':
                                     monster_name = 'client'
                                 Enemy(monster_name, (x, y), [
-                                    self.visible_sprites, self.attackable_sprites], self.obstacles_sprites, self.player, self.function_final, self.function_gameover)
+                                    self.visible_sprites, self.attackable_sprites], self.obstacles_sprites, self.function_final, self.function_gameover)
 
     def function_final(self):
         self.background.stop()

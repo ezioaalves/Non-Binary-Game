@@ -3,7 +3,7 @@ from weapon import Weapon
 from utils import import_folder, input
 from . import Entity
 from read_json import settings
-from visual import AnimationPlayer
+from visual import GetParticle
 
 
 class Player(Entity):
@@ -57,12 +57,11 @@ class Player(Entity):
         self.portal_sprites = portal_sprites
 
         # temporizador dano
-        self.vulnerable = True
         self.hurt_time = None
         self.invicible_duration = 500
 
         # particulas
-        self.animation_player = AnimationPlayer()
+        self.animation_player = GetParticle()
 
     def import_player_assets(self):
         '''carrega todos os sprites de todos os estados do jogador'''

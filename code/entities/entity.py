@@ -15,19 +15,19 @@ class Entity(pygame.sprite.Sprite, abc.ABC):
 
     def set_frame_index(self, value):
         self.__frame_index = value
-    
+
     def get_frame_index(self):
         return self.__frame_index
-    
+
     def set_animation_speed(self, value):
         self.__animation_speed = value
-    
+
     def get_animation_speed(self):
         return self.__animation_speed
-    
+
     def set_invicible_duration(self, value):
         self.__invicible_duration = value
-    
+
     def get_invicible_duration(self):
         return self.__invicible_duration
 
@@ -68,7 +68,7 @@ class Entity(pygame.sprite.Sprite, abc.ABC):
     @abc.abstractmethod
     def cooldowns(self):
         pass
-    
+
     def wave_value(self):
         '''efeito de piscar no jogador'''
         value = sin(pygame.time.get_ticks())

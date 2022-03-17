@@ -2,11 +2,11 @@ import pygame
 from .entity import Entity
 from utils import *
 from read_json import settings
-from visual import AnimationPlayer
+from visual import GetParticle
 
 
 class Enemy(Entity):
-    def __init__(self, monster_name, pos, groups, obstacle_sprites, player, function_final, function_gameover):
+    def __init__(self, monster_name, pos, groups, obstacle_sprites, function_final, function_gameover):
 
         # configuração geral
         super().__init__(groups)
@@ -17,7 +17,7 @@ class Enemy(Entity):
         self.status = 'idle'
         self.image = pygame.image.load(
             'lib/graphics/enemies/bug/idle/0.png').convert_alpha()
-        self.animation_player = AnimationPlayer()
+        self.animation_player = GetParticle()
         self.visible_sprites = groups[0]
 
         # movimento
@@ -40,7 +40,6 @@ class Enemy(Entity):
         self.can_attack = True
         self.attack_time = None
         self.attack_cooldown = 800
-        self.player = player
         self.function_final = function_final
         self.function_gameover = function_gameover
         self.final_kill = None
@@ -95,7 +94,7 @@ class Enemy(Entity):
         '''determina as ações do inimigo'''
         if self.status == 'attack':
             self.attack_time = pygame.time.get_ticks()
-            self.damage_player(self.attack_damage, self.attack_type)
+            self.damage_player(self.attack_damage, self.attack_type, player)
             self.attack_sound.play()
         elif self.status == 'walking':
             self.direction = self.get_player_distance_direction(player)[1]
@@ -167,17 +166,17 @@ class Enemy(Entity):
         self.animation_player.create_particles(
             particle_type, pos, self.visible_sprites)
 
-    def damage_player(self, amount, attack_type):
+    def damage_player(self, amount, attack_type, player):
         '''aplica dano ao jogador e liga a invulnerabilidade temporária'''
-        if self.player.vulnerable:
-            self.player.health -= amount
-            self.player.vulnerable = False
-            self.player.hurt_time = pygame.time.get_ticks()
+        if player.vulnerable:
+            player.health -= amount
+            player.vulnerable = False
+            player.hurt_time = pygame.time.get_ticks()
             self.animation_player.create_particles(
-                attack_type, self.player.rect.center, [self.visible_sprites])
-        if self.player.health <= 0:
+                attack_type, player.rect.center, [self.visible_sprites])
+        if player.health <= 0:
             self.deleted_sound.play()
-            self.player.kill()
+            player.kill()
             self.deleted_time = pygame.time.get_ticks()
             self.deleted_player = True
 

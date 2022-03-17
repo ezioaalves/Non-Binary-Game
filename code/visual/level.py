@@ -32,15 +32,11 @@ class Level:
         self.call_final = call_final
 
         # sons
-        self.hit_sound = pygame.mixer.Sound('lib/audio/attack/hit.wav')
-        self.hit_sound.set_volume(2)
-        self.shot_sound = pygame.mixer.Sound('lib/audio/attack/shot.wav')
-        self.shot_sound.set_volume(2)
         self.background = pygame.mixer.Sound('lib/audio/background/level.wav')
         self.background.set_volume(0.05)
         pygame.mixer.Channel(1).play(self.background, loops=-1)
 
-        # configuração de sprite
+        # criação do mapa
         self.create_map()
 
         # Interface de Usuario
@@ -85,12 +81,11 @@ class Level:
                             if col == '266':
                                 # define o jogador e sua position inicial
                                 self.player.hitbox.center = (x+24, y+24)
-                                pass
                             else:
-                                if col == '230':
-                                    monster_name = 'bug'
                                 if col == '374':
                                     monster_name = 'client'
+                                else:
+                                    monster_name = 'bug'
                                 Enemy(monster_name, (x, y), [
                                     self.visible_sprites, self.attackable_sprites], self.obstacles_sprites, self.function_final, self.function_gameover)
 

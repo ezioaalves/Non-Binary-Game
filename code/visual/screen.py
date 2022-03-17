@@ -30,7 +30,7 @@ class Screen:
                 self.function()
         if self.screen_type != 'title':
             current_time = pygame.time.get_ticks()
-            if current_time > self.start_time + 5000:
+            if current_time > self.start_time + 3000:
                 self.background_sound.stop()
                 self.function()
 

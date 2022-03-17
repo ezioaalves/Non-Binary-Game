@@ -194,6 +194,7 @@ class Player(Entity):
                     shot_y = self.rect.centery
                     self.animation_player.create_particles('pointing', (shot_x, shot_y), [
                                                            self.visible_sprites, self.point_sprites])
+                # vertical
                 else:
                     offset_y = (direction.y * i) * \
                         settings['general_settings']['tilesize']
